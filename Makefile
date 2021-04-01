@@ -77,7 +77,7 @@ fmt: go_version_check
 .PHONY: test
 test:
 	@echo "$(CGREEN)Run all test cases ...$(CEND)"
-	@go test $(LDFLAGS) -timeout 10m -race ./...
+	@go test $(LDFLAGS) -v -timeout 10m -race ./...
 	@echo "test Success!"
 
 # Rule golang test cases with `-update` flag
