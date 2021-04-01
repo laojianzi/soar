@@ -1,0 +1,10 @@
+version: "1"
+rules:
+  - base: dev
+    upstream: XiaoMi:dev
+    assignees:
+      - laojianzi
+    reviewers:
+      - laojianzi
+    conflictReviewers:
+      - laojianzi
