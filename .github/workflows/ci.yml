@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        go: [1.13]
+        go: [1.15]
         mysql: [5.7, 8, latest]
     name: ${{ matrix.os }}/go ${{ matrix.go }}/mysql ${{ matrix.mysql }}
     runs-on: ${{ matrix.os }}
