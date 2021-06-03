@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - '*dev*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        go: [1.16]
+        mysql: [5.7, 8, latest]
+    name: ${{ matrix.os }}/go ${{ matrix.go }}/mysql ${{ matrix.mysql }}
+    runs-on: ${{ matrix.os }}
+    services:
+      mysql:
+        image: mysql:${{ matrix.mysql }}
+        env:
+          MYSQL_DATABASE: sakila
+          MYSQL_ROOT_PASSWORD: 1tIsB1g3rt
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+    env:
+      GO111MODULE: auto
+    steps:
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Dependencies
+        run: zcat ./test/sql/init.sql.gz | mysql -h 127.0.0.1 -u root -p1tIsB1g3rt sakila
+
+      - name: Run Tests
+        run: ls -l -a database/testdata && make cover
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
