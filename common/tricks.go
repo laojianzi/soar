@@ -34,7 +34,7 @@ import (
 func GoldenDiff(f func(), name string, update *bool) error {
 	var b bytes.Buffer
 	w := bufio.NewWriter(&b)
-	str := captureOutput(f)
+	str := CaptureOutput(f)
 	_, err := w.WriteString(str)
 	if err != nil {
 		Log.Warning(err.Error())
@@ -61,8 +61,8 @@ func GoldenDiff(f func(), name string, update *bool) error {
 	return err
 }
 
-// captureOutput 获取函数标准输出
-func captureOutput(f func()) string {
+// CaptureOutput 获取函数标准输出
+func CaptureOutput(f func()) string {
 	// keep backup of the real stdout
 	oldStdout := os.Stdout
 	r, w, _ := os.Pipe()

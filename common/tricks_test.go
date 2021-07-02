@@ -29,7 +29,7 @@ func TestCaptureOutput(t *testing.T) {
 	// test output buf large than 65535
 	length := 1<<16 + 1
 	go func() {
-		str := captureOutput(
+		str := CaptureOutput(
 			func() {
 				var str []string
 				for i := 0; i < length; i++ {
