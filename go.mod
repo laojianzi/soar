@@ -12,7 +12,7 @@ require (
 	github.com/percona/go-mysql v0.0.0-20210427141028-73d29c6da78c
 	github.com/pingcap/parser v0.0.0-20210525032559-c37778aff307
 	github.com/pingcap/tidb v1.1.0-beta.0.20210601085537-5d7c852770eb
-	github.com/russross/blackfriday v1.6.0
+	github.com/russross/blackfriday v2.0.0+incompatible
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca
 	github.com/tidwall/gjson v1.12.1
 	gopkg.in/yaml.v2 v2.4.0
