@@ -1,0 +1,22 @@
+# Basic dependabot.yml file with
+# minimum configuration for two package managers
+
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: /
+    schedule:
+      interval: "daily"
+    assignees:
+      - "laojianzi"
+    reviewers:
+      - "laojianzi"
+
+  - package-ecosystem: "github-actions"
+    directory: /
+    schedule:
+      interval: "daily"
+    assignees:
+      - "laojianzi"
+    reviewers:
+      - "laojianzi"
