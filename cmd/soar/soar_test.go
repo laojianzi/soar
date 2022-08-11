@@ -55,7 +55,7 @@ func Test_Main(_ *testing.T) {
 	common.Config.LogLevel = 0
 	common.Config.Query = "select * syntaxError"
 	main()
-	common.Config.Query = "select * from film;alter table city add index idx_country_id(country_id);"
+	common.Config.Query = "SELECT * FROM film;ALTER TABLE city ADD index idx_country_id(country_id);"
 	main()
 	common.Log.Debug("Exiting function: %s", common.GetFunctionName())
 }
@@ -65,7 +65,7 @@ func Test_Main_More(_ *testing.T) {
 	common.Config.LogLevel = 0
 	common.Config.Profiling = true
 	common.Config.Explain = true
-	common.Config.Query = "select * from film where country_id = 1;use sakila;alter table city add index idx_country_id(country_id);"
+	common.Config.Query = "SELECT * FROM film WHERE country_id = 1;use sakila;ALTER TABLE city ADD index idx_country_id(country_id);"
 	orgRerportType := common.Config.ReportType
 	for _, typ := range []string{
 		"json", "html", "markdown", "fingerprint", "compress", "pretty", "rewrite",
@@ -86,14 +86,19 @@ func Test_Main_initQuery(t *testing.T) {
 		t.Errorf("want 'select 1', got %s", query)
 	}
 
+	oldDevPath := common.DevPath
+	common.DevPath = filepath.Join(oldDevPath, "..")
+
 	// read from file
-	initQuery(common.DevPath + "/README.md")
+	initQuery(filepath.Join(common.DevPath, "README.md"))
 
 	orgStdin := os.Stdin
-	tmpStdin, err := os.Open(common.DevPath + "/VERSION")
+	tmpStdin, err := os.Open(filepath.Join(common.DevPath, "VERSION"))
 	if err != nil {
 		t.Error(err)
 	}
+	common.DevPath = oldDevPath
+
 	os.Stdin = tmpStdin
 	fmt.Println(initQuery(""))
 	os.Stdin = orgStdin
