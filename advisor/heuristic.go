@@ -2623,7 +2623,6 @@ func (q *Query4Audit) RuleCompareWithFunction() Rule {
 				if len(common.JSONFind(where, "FnName")) > 0 {
 					rule = HeuristicRules["FUN.001"]
 				}
-				break
 			}
 		}
 	}
@@ -2793,7 +2792,7 @@ func (q *Query4Audit) RuleAlterCharset() Rule {
 							if option.Tp == tidb.TableOptionCharset ||
 								option.Tp == tidb.TableOptionCollate {
 								//增加CONVERT TO的判断
-								convertReg, _ := regexp.Compile("convert\\b\\s+to")
+								convertReg, _ := regexp.Compile(`convert\b\s+to`)
 								if convertReg.Match([]byte(strings.ToLower(q.Query))) {
 									break
 								} else {

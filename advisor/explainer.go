@@ -24,8 +24,6 @@ import (
 	"github.com/XiaoMi/soar/database"
 )
 
-var explainRuleID int
-
 // [EXP.XXX]Rule
 var explainRules map[string]Rule
 
@@ -121,7 +119,7 @@ func checkExplainRef(exp *database.ExplainInfo) {
 			if i == 0 && len(rows) > 1 {
 				continue
 			}
-			tablesSuggests[row.TableName] = append(tablesSuggests[row.TableName], fmt.Sprintf("Ref:null"))
+			tablesSuggests[row.TableName] = append(tablesSuggests[row.TableName], "Ref:null")
 		}
 	}
 }
@@ -171,7 +169,6 @@ func checkExplainFiltered(exp *database.ExplainInfo) {
 // ExplainAdvisor 基于explain信息给出建议
 func ExplainAdvisor(exp *database.ExplainInfo) map[string]Rule {
 	common.Log.Debug("ExplainAdvisor SQL: %v", exp.SQL)
-	explainRuleID = 0
 	explainRules = make(map[string]Rule)
 	tablesSuggests = make(map[string][]string)
 

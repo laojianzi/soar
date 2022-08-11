@@ -422,7 +422,7 @@ func (idxAdv *IndexAdvisor) idxColsTypeCheck(idxList []IndexInfo) []IndexInfo {
 					// _OPR_SPLIT_ 是自定的用于后续处理的特殊分隔符
 					common.Log.Warning("adding index '%s(%s)' to table '%s' causes the index to be too long, overflow is %d",
 						col.Name, col.DataType, col.Table, overFlow)
-					tmpCol += fmt.Sprintf("_OPR_SPLIT_(N)")
+					tmpCol += "_OPR_SPLIT_(N)"
 				} else {
 					// 索引没有过长，可以加一个最长的前缀索引
 					common.Log.Warning("index column too large: %s.%s --> %s.%s(%d), data type: %s",
@@ -463,7 +463,7 @@ func (idxAdv *IndexAdvisor) idxColsTypeCheck(idxList []IndexInfo) []IndexInfo {
 		}
 
 		// 新的alter语句
-		newDDL := fmt.Sprintf("alter table `%s`.`%s` add index `%s` (`%s)", idxAdv.vEnv.RealDB(idx.Database),
+		newDDL := fmt.Sprintf("ALTER TABLE `%s`.`%s` ADD index `%s` (`%s)", idxAdv.vEnv.RealDB(idx.Database),
 			idx.Table, idxName, idxCols)
 
 		// 将筛选改造后的索引信息信息加入到新的索引列表中
@@ -545,7 +545,7 @@ func (idxAdv *IndexAdvisor) mergeIndexes(idxList []IndexInfo) []IndexInfo {
 					// TODO: 关于外键索引去重的优雅解决方案
 					if !isConstraint {
 						if common.Config.AllowDropIndex {
-							alterSQL := fmt.Sprintf("alter table `%s`.`%s` drop index `%s`", idx.Database, idx.Table, idxName)
+							alterSQL := fmt.Sprintf("ALTER TABLE `%s`.`%s` DROP INDEX `%s`", idx.Database, idx.Table, idxName)
 							indexes = append(indexes, IndexInfo{
 								Name:          idxName,
 								Database:      idx.Database,
@@ -674,7 +674,7 @@ func (idxAdv *IndexAdvisor) buildIndex(idxList map[string]map[string][]*common.C
 				idxName = strings.TrimRight(idxName[:IndexNameMaxLength], "_")
 			}
 
-			alterSQL := fmt.Sprintf("alter table `%s`.`%s` add index `%s` (`%s`)", idxAdv.vEnv.RealDB(db), tb,
+			alterSQL := fmt.Sprintf("ALTER TABLE `%s`.`%s` ADD index `%s` (`%s`)", idxAdv.vEnv.RealDB(db), tb,
 				idxName, strings.Join(colNames, "`,`"))
 
 			indexes = append(indexes, IndexInfo{
@@ -702,9 +702,9 @@ func (idxAdv *IndexAdvisor) buildIndexWithNoEnv(indexList map[string]map[string]
 				}
 				idxName := common.Config.IdxPrefix + col.Name
 				// 库、表、列名需要用反撇转义
-				alterSQL := fmt.Sprintf("alter table `%s`.`%s` add index `%s` (`%s`)", idxAdv.vEnv.RealDB(col.DB), col.Table, idxName, col.Name)
+				alterSQL := fmt.Sprintf("ALTER TABLE `%s`.`%s` ADD index `%s` (`%s`)", idxAdv.vEnv.RealDB(col.DB), col.Table, idxName, col.Name)
 				if col.DB == "" {
-					alterSQL = fmt.Sprintf("alter table `%s` add index `%s` (`%s`)", col.Table, idxName, col.Name)
+					alterSQL = fmt.Sprintf("ALTER TABLE `%s` ADD index `%s` (`%s`)", col.Table, idxName, col.Name)
 				}
 
 				indexes = append(indexes, IndexInfo{

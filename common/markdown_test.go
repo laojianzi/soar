@@ -62,7 +62,12 @@ func TestMarkdown2Html(t *testing.T) {
 	if nil != err {
 		t.Fatal(err)
 	}
-	io.Copy(html, gd)
+
+	_, err = io.Copy(html, gd)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	Log.Debug("Exiting function: %s", GetFunctionName())
 }
 

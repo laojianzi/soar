@@ -93,9 +93,9 @@ func IsColsPart(a, b []*Column) bool {
 	}
 
 	for i := 0; i < times; i++ {
-		if strings.ToLower(a[i].DB) != strings.ToLower(b[i].DB) ||
-			strings.ToLower(a[i].Table) != strings.ToLower(b[i].Table) ||
-			strings.ToLower(a[i].Name) != strings.ToLower(b[i].Name) {
+		if !strings.EqualFold(a[i].DB, b[i].DB) ||
+			!strings.EqualFold(a[i].Table, b[i].Table) ||
+			!strings.EqualFold(a[i].Name, b[i].Name) {
 			return false
 		}
 	}

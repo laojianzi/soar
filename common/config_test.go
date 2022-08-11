@@ -61,7 +61,12 @@ func TestReadConfigFile(t *testing.T) {
 	if Config == nil {
 		Config = new(Configuration)
 	}
-	Config.readConfigFile(filepath.Join(DevPath, "etc/soar.yaml"))
+
+	err := Config.readConfigFile(filepath.Join(DevPath, "etc/soar.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	Log.Debug("Exiting function: %s", GetFunctionName())
 }
 
@@ -155,15 +160,20 @@ func TestArgConfig(t *testing.T) {
 
 func TestPrintConfiguration(t *testing.T) {
 	Log.Debug("Entering function: %s", GetFunctionName())
-	Config.readConfigFile(filepath.Join(DevPath, "etc/soar.yaml"))
+	err := Config.readConfigFile(filepath.Join(DevPath, "etc/soar.yaml"))
+	if err != nil {
+		t.Error(err)
+	}
+
 	oldLogOutput := Config.LogOutput
 	Config.LogOutput = "soar.log"
-	err := GoldenDiff(func() {
+	err = GoldenDiff(func() {
 		PrintConfiguration()
 	}, t.Name(), update)
 	if err != nil {
 		t.Error(err)
 	}
+
 	Config.LogOutput = oldLogOutput
 	Log.Debug("Exiting function: %s", GetFunctionName())
 }

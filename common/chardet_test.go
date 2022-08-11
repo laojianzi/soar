@@ -49,9 +49,14 @@ func TestRemoveBOM(t *testing.T) {
 	if err != nil {
 		t.Errorf("ioutil.ReadFile %s, Error: %s", fileName, err.Error())
 	}
-	GoldenDiff(func() {
+
+	err = GoldenDiff(func() {
 		fmt.Println(RemoveBOM(buf))
 	}, t.Name(), update)
+	if nil != err {
+		t.Fatal(err)
+	}
+
 	Log.Debug("Exiting function: %s", GetFunctionName())
 }
 

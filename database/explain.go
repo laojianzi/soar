@@ -640,7 +640,7 @@ func ExplainInfoTranslator(exp *ExplainInfo) string {
 	var selectTypeBuf []string
 	var accessTypeBuf []string
 	var extraTypeBuf []string
-	buf = append(buf, fmt.Sprint("### Explain信息解读\n"))
+	buf = append(buf, "### Explain信息解读\n")
 	rows := exp.ExplainRows
 	if exp.ExplainFormat == JSONFormatExplain {
 		// JSON形式遍历分析不方便，转成Row格式统一处理
@@ -663,7 +663,7 @@ func ExplainInfoTranslator(exp *ExplainInfo) string {
 		}
 	}
 	if len(selectTypeBuf) > 0 {
-		buf = append(buf, fmt.Sprint("#### SelectType信息解读\n"))
+		buf = append(buf, "#### SelectType信息解读\n")
 		sort.Strings(selectTypeBuf)
 		buf = append(buf, strings.Join(selectTypeBuf, "\n"))
 	}
@@ -693,7 +693,7 @@ func ExplainInfoTranslator(exp *ExplainInfo) string {
 		}
 	}
 	if len(accessTypeBuf) > 0 {
-		buf = append(buf, fmt.Sprint("#### Type信息解读\n"))
+		buf = append(buf, "#### Type信息解读\n")
 		sort.Strings(accessTypeBuf)
 		buf = append(buf, strings.Join(accessTypeBuf, "\n"))
 	}
@@ -730,7 +730,7 @@ func ExplainInfoTranslator(exp *ExplainInfo) string {
 		}
 	}
 	if len(extraTypeBuf) > 0 {
-		buf = append(buf, fmt.Sprint("#### Extra信息解读\n"))
+		buf = append(buf, "#### Extra信息解读\n")
 		sort.Strings(extraTypeBuf)
 		buf = append(buf, strings.Join(extraTypeBuf, "\n"))
 	}
