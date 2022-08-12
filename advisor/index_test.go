@@ -73,10 +73,10 @@ func TestRuleImplicitConversion(t *testing.T) {
 	common.Config.OnlineDSN = common.Config.TestDSN
 
 	initSQLs := []string{
-		`CREATE TABLE t1 (id int, title varchar(255) CHARSET utf8 COLLATE utf8_general_ci);`,
-		`CREATE TABLE t2 (id int, title varchar(255) CHARSET utf8mb4);`,
-		`CREATE TABLE t3 (id int, title varchar(255) CHARSET utf8 COLLATE utf8_bin);`,
-		`CREATE TABLE t4 (id int, col bit(1));`,
+		`CREATE TABLE t1 (id INT, title VARCHAR(255) CHARSET utf8 COLLATE utf8_general_ci);`,
+		`CREATE TABLE t2 (id INT, title VARCHAR(255) CHARSET utf8mb4);`,
+		`CREATE TABLE t3 (id INT, title VARCHAR(255) CHARSET utf8 COLLATE utf8_bin);`,
+		`CREATE TABLE t4 (id INT, col BIT(1));`,
 	}
 	for _, sql := range initSQLs {
 		vEnv.BuildVirtualEnv(rEnv, sql)
@@ -88,9 +88,9 @@ func TestRuleImplicitConversion(t *testing.T) {
 			"SELECT * FROM t1 WHERE title >= 60;",
 			"SELECT * FROM t1, t2 WHERE t1.title = t2.title;",
 			"SELECT * FROM t1, t3 WHERE t1.title = t3.title;",
-			"SELECT * FROM t1 WHERE title in (60, '60');",
-			"SELECT * FROM t1 WHERE title in (60);",
-			"SELECT * FROM t1 WHERE title in (60, 60);",
+			"SELECT * FROM t1 WHERE title IN (60, '60');",
+			"SELECT * FROM t1 WHERE title IN (60);",
+			"SELECT * FROM t1 WHERE title IN (60, 60);",
 			"SELECT * FROM t1 WHERE title = 1",
 		},
 		// OK
@@ -151,9 +151,9 @@ func TestRuleImplicitConversion(t *testing.T) {
 func TestRuleImpossibleOuterJoin(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		`select city_id, city, country from city left outer join country using(country_id) WHERE city.city_id=59 and country.country='Algeria'`,
-		`select city_id, city, country from city left outer join country using(country_id) WHERE country.country='Algeria'`,
-		`select city_id, city, country from city left outer join country on city.country_id=country.country_id WHERE city.city_id IS NULL`,
+		`SELECT city_id, city, country FROM city LEFT OUTER JOIN country USING(country_id) WHERE city.city_id=59 AND country.country='Algeria'`,
+		`SELECT city_id, city, country FROM city LEFT OUTER JOIN country USING(country_id) WHERE country.country='Algeria'`,
+		`SELECT city_id, city, country FROM city LEFT OUTER JOIN country ON city.country_id=country.country_id WHERE city.city_id IS NULL`,
 	}
 
 	for _, sql := range sqls {
@@ -186,12 +186,12 @@ func TestIndexAdvisorRuleGroupByConst(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			`select film_id, title from film where release_year='2006' group by release_year`,
-			`select film_id, title from film where release_year in ('2006') group by release_year`,
+			`SELECT film_id, title FROM film WHERE release_year='2006' GROUP BY release_year`,
+			`SELECT film_id, title FROM film WHERE release_year IN ('2006') GROUP BY release_year`,
 		},
 		{
 			// 反面的例子
-			`select film_id, title from film where release_year in ('2006', '2007') group by release_year`,
+			`SELECT film_id, title FROM film WHERE release_year IN ('2006', '2007') GROUP BY release_year`,
 		},
 	}
 
@@ -248,12 +248,12 @@ func TestIndexAdvisorRuleOrderByConst(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			`select film_id, title from film where release_year='2006' order by release_year;`,
-			`select film_id, title from film where release_year in ('2006') order by release_year;`,
+			`SELECT film_id, title FROM film WHERE release_year='2006' ORDER BY release_year;`,
+			`SELECT film_id, title FROM film WHERE release_year IN ('2006') ORDER BY release_year;`,
 		},
 		{
 			// 反面的例子
-			`select film_id, title from film where release_year in ('2006', '2007') order by release_year;`,
+			`SELECT film_id, title FROM film WHERE release_year IN ('2006', '2007') ORDER BY release_year;`,
 		},
 	}
 
@@ -310,11 +310,11 @@ func TestRuleUpdatePrimaryKey(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			`update film set film_id = 1 where title='a';`,
+			`UPDATE film SET film_id = 1 WHERE title='a';`,
 		},
 		{
 			// 反面的例子
-			`select film_id, title from film where release_year in ('2006', '2007') order by release_year;`,
+			`SELECT film_id, title FROM film WHERE release_year IN ('2006', '2007') ORDER BY release_year;`,
 		},
 	}
 
@@ -464,7 +464,7 @@ func TestMergeAdvices(t *testing.T) {
 func TestIdxColsTypeCheck(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		`select city_id, city, country from city left outer join country using(country_id) WHERE city.city_id=59 and country.country='Algeria'`,
+		`SELECT city_id, city, country FROM city LEFT OUTER JOIN country USING(country_id) WHERE city.city_id=59 AND country.country='Algeria'`,
 	}
 
 	for _, sql := range sqls {
@@ -498,7 +498,7 @@ func TestIdxColsTypeCheck(t *testing.T) {
 
 			if idxAdvisor != nil {
 				rule := idxAdvisor.idxColsTypeCheck(idxList)
-				if !(len(rule) > 0 && rule[0].DDL == "alter table `sakila`.`city` add index `idx_country_id` (`country_id`(N))") {
+				if !(len(rule) > 0 && strings.EqualFold(rule[0].DDL, "ALTER TABLE `sakila`.`city` ADD INDEX `idx_country_id` (`country_id`(N))")) {
 					t.Error(pretty.Sprint(rule))
 				}
 			}

@@ -1,43 +1,43 @@
 use sakila OK
 select frm syntaxError OK
-create table t(id int,c1 varchar(20),PRIMARY KEY (id)); OK
-alter table t add index `idx_c1`(c1); OK
-select * from city where country_id = 44; OK
-select * from address where address2 is not null; OK
-select * from address where address2 is null; OK
-select * from address where address2 >= 44; OK
-select * from city where country_id between 44 and 107; OK
-select * from city where city like 'Ad%'; OK
-select * from city where city = 'Aden' and country_id = 107; OK
-select * from city where country_id > 31 and city = 'Aden'; OK
-select * from address where address_id > 8 and city_id < 400 and district = 'Nantou'; OK
-select * from address where address_id > 8 and city_id < 400; OK
-select * from actor where last_update='2006-02-15 04:34:33' and last_name='CHASE' group by first_name; OK
-select * from address where last_update >='2014-09-25 22:33:47' group by district; OK
-select * from address group by address,district; OK
-select * from address where last_update='2014-09-25 22:30:27' group by district,(address_id+city_id); OK
-select * from customer where active=1 order by last_name limit 10; OK
-select * from customer order by last_name limit 10; OK
-select * from customer where address_id > 224 order by address_id limit 10; OK
-select * from customer where address_id < 224 order by address_id limit 10; OK
-select * from customer where active=1 order by last_name; OK
-select * from customer where address_id > 224 order by address_id; OK
-select * from customer where address_id in (224,510) order by last_name; OK
-select city from city where country_id = 44; OK
-select city,city_id from city where country_id = 44 and last_update='2006-02-15 04:45:25'; OK
-select city from city where country_id > 44 and last_update > '2006-02-15 04:45:25'; OK
-select * from city where country_id=1 and city='Kabul' order by last_update; OK
-select * from city where country_id>1 and city='Kabul' order by last_update; OK
-select * from city where city_id>251 order by last_update;  OK
-select * from city i inner join country o on i.country_id=o.country_id; OK
-select * from city i left join country o on i.city_id=o.country_id; OK
-select * from city i right join country o on i.city_id=o.country_id; OK
-select * from city i left join country o on i.city_id=o.country_id where o.country_id is null; OK
-select * from city i right join country o on i.city_id=o.country_id where i.city_id is null; OK
-select * from city i left join country o on i.city_id=o.country_id union select * from city i right join country o on i.city_id=o.country_id; OK
-select * from city i left join country o on i.city_id=o.country_id where o.country_id is null union select * from city i right join country o on i.city_id=o.country_id where i.city_id is null; OK
-select first_name,last_name,email from customer natural left join address; OK
-select first_name,last_name,email from customer natural left join address; OK
-select first_name,last_name,email from customer natural right join address; OK
-select first_name,last_name,email from customer STRAIGHT_JOIN address on customer.address_id=address.address_id; OK
-select ID,name from (select address from customer_list where SID=1 order by phone limit 50,10) a join customer_list l on (a.address=l.address) join city c on (c.city=l.city) order by phone desc; OK
+CREATE TABLE t(id INT,c1 VARCHAR(20),PRIMARY KEY (id)); OK
+ALTER TABLE t ADD INDEX `idx_c1`(c1); OK
+SELECT * FROM city WHERE country_id = 44; OK
+SELECT * FROM address WHERE address2 IS NOT NULL; OK
+SELECT * FROM address WHERE address2 IS NULL; OK
+SELECT * FROM address WHERE address2 >= 44; OK
+SELECT * FROM city WHERE country_id BETWEEN 44 AND 107; OK
+SELECT * FROM city WHERE city LIKE 'Ad%'; OK
+SELECT * FROM city WHERE city = 'Aden' AND country_id = 107; OK
+SELECT * FROM city WHERE country_id > 31 AND city = 'Aden'; OK
+SELECT * FROM address WHERE address_id > 8 AND city_id < 400 AND district = 'Nantou'; OK
+SELECT * FROM address WHERE address_id > 8 AND city_id < 400; OK
+SELECT * FROM actor WHERE last_update='2006-02-15 04:34:33' AND last_name='CHASE' GROUP BY first_name; OK
+SELECT * FROM address WHERE last_update >='2014-09-25 22:33:47' GROUP BY district; OK
+SELECT * FROM address GROUP BY address,district; OK
+SELECT * FROM address WHERE last_update='2014-09-25 22:30:27' GROUP BY district,(address_id+city_id); OK
+SELECT * FROM customer WHERE active=1 ORDER BY last_name LIMIT 10; OK
+SELECT * FROM customer ORDER BY last_name LIMIT 10; OK
+SELECT * FROM customer WHERE address_id > 224 ORDER BY address_id LIMIT 10; OK
+SELECT * FROM customer WHERE address_id < 224 ORDER BY address_id LIMIT 10; OK
+SELECT * FROM customer WHERE active=1 ORDER BY last_name; OK
+SELECT * FROM customer WHERE address_id > 224 ORDER BY address_id; OK
+SELECT * FROM customer WHERE address_id IN (224,510) ORDER BY last_name; OK
+SELECT city FROM city WHERE country_id = 44; OK
+SELECT city,city_id FROM city WHERE country_id = 44 AND last_update='2006-02-15 04:45:25'; OK
+SELECT city FROM city WHERE country_id > 44 AND last_update > '2006-02-15 04:45:25'; OK
+SELECT * FROM city WHERE country_id=1 AND city='Kabul' ORDER BY last_update; OK
+SELECT * FROM city WHERE country_id>1 AND city='Kabul' ORDER BY last_update; OK
+SELECT * FROM city WHERE city_id>251 ORDER BY last_update;  OK
+SELECT * FROM city i INNER JOIN country o ON i.country_id=o.country_id; OK
+SELECT * FROM city i LEFT JOIN country o ON i.city_id=o.country_id; OK
+SELECT * FROM city i RIGHT JOIN country o ON i.city_id=o.country_id; OK
+SELECT * FROM city i LEFT JOIN country o ON i.city_id=o.country_id WHERE o.country_id IS NULL; OK
+SELECT * FROM city i RIGHT JOIN country o ON i.city_id=o.country_id WHERE i.city_id IS NULL; OK
+SELECT * FROM city i LEFT JOIN country o ON i.city_id=o.country_id UNION SELECT * FROM city i RIGHT JOIN country o ON i.city_id=o.country_id; OK
+SELECT * FROM city i LEFT JOIN country o ON i.city_id=o.country_id WHERE o.country_id IS NULL UNION SELECT * FROM city i RIGHT JOIN country o ON i.city_id=o.country_id WHERE i.city_id IS NULL; OK
+SELECT first_name,last_name,email FROM customer NATURAL LEFT JOIN address; OK
+SELECT first_name,last_name,email FROM customer NATURAL LEFT JOIN address; OK
+SELECT first_name,last_name,email FROM customer NATURAL RIGHT JOIN address; OK
+SELECT first_name,last_name,email FROM customer STRAIGHT_JOIN address ON customer.address_id=address.address_id; OK
+SELECT ID,name FROM (SELECT address FROM customer_list WHERE SID=1 ORDER BY phone LIMIT 50,10) a JOIN customer_list l ON (a.address=l.address) JOIN city c ON (c.city=l.city) ORDER BY phone DESC; OK

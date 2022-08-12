@@ -17,7 +17,7 @@ load test_helper
 }
 
 @test "Check dial timeout" {
-  run timeout 1 ${SOAR_BIN} -test-dsn "1.1.1.1" -check-config
+  run timeout 1 ${SOAR_BIN} -test-dsn "1.2.3.4" -check-config
   echo "$output"
   [ $status -eq 124 ]
 }

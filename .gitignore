@@ -5,6 +5,7 @@ doc/blueprint/
 *.iml
 *.swp
 *.log
+coverage
 coverage.*
 y.output
 

@@ -70,7 +70,7 @@ func TestNewVirtualEnv(t *testing.T) {
 		"use sakila",
 		"select frm syntaxError",
 		"CREATE TABLE t(id INT,c1 VARCHAR(20),PRIMARY KEY (id));",
-		"ALTER TABLE t ADD index `idx_c1`(c1);",
+		"ALTER TABLE t ADD INDEX `idx_c1`(c1);",
 		"SELECT * FROM city WHERE country_id = 44;",
 		"SELECT * FROM address WHERE address2 IS NOT NULL;",
 		"SELECT * FROM address WHERE address2 IS NULL;",
@@ -85,10 +85,10 @@ func TestNewVirtualEnv(t *testing.T) {
 		"SELECT * FROM address WHERE last_update >='2014-09-25 22:33:47' GROUP BY district;",
 		"SELECT * FROM address GROUP BY address,district;",
 		"SELECT * FROM address WHERE last_update='2014-09-25 22:30:27' GROUP BY district,(address_id+city_id);",
-		"SELECT * FROM customer WHERE active=1 ORDER BY last_name limit 10;",
-		"SELECT * FROM customer ORDER BY last_name limit 10;",
-		"SELECT * FROM customer WHERE address_id > 224 ORDER BY address_id limit 10;",
-		"SELECT * FROM customer WHERE address_id < 224 ORDER BY address_id limit 10;",
+		"SELECT * FROM customer WHERE active=1 ORDER BY last_name LIMIT 10;",
+		"SELECT * FROM customer ORDER BY last_name LIMIT 10;",
+		"SELECT * FROM customer WHERE address_id > 224 ORDER BY address_id LIMIT 10;",
+		"SELECT * FROM customer WHERE address_id < 224 ORDER BY address_id LIMIT 10;",
 		"SELECT * FROM customer WHERE active=1 ORDER BY last_name;",
 		"SELECT * FROM customer WHERE address_id > 224 ORDER BY address_id;",
 		"SELECT * FROM customer WHERE address_id IN (224,510) ORDER BY last_name;",
@@ -109,7 +109,7 @@ func TestNewVirtualEnv(t *testing.T) {
 		"SELECT first_name,last_name,email FROM customer NATURAL LEFT JOIN address;",
 		"SELECT first_name,last_name,email FROM customer NATURAL RIGHT JOIN address;",
 		"SELECT first_name,last_name,email FROM customer STRAIGHT_JOIN address ON customer.address_id=address.address_id;",
-		"SELECT ID,name FROM (SELECT address FROM customer_list WHERE SID=1 ORDER BY phone limit 50,10) a JOIN customer_list l ON (a.address=l.address) JOIN city c ON (c.city=l.city) ORDER BY phone DESC;",
+		"SELECT ID,name FROM (SELECT address FROM customer_list WHERE SID=1 ORDER BY phone LIMIT 50,10) a JOIN customer_list l ON (a.address=l.address) JOIN city c ON (c.city=l.city) ORDER BY phone DESC;",
 	}
 
 	err := common.GoldenDiff(func() {
@@ -143,12 +143,12 @@ func TestCleanupTestDatabase(t *testing.T) {
 		common.Log.Warn("common.Config.TestDSN.Disable=true, by pass TestCleanupTestDatabase")
 		return
 	}
-	_, err := vEnv.Query("drop database if exists optimizer_060102150405_xxxxxxxxxxxxxxxx")
+	_, err := vEnv.Query("DROP DATABASE IF EXISTS optimizer_060102150405_xxxxxxxxxxxxxxxx")
 	if err != nil {
 		t.Error(err)
 	}
 
-	_, err = vEnv.Query("create database optimizer_060102150405_xxxxxxxxxxxxxxxx")
+	_, err = vEnv.Query("CREATE DATABASE optimizer_060102150405_xxxxxxxxxxxxxxxx")
 	if err != nil {
 		t.Error(err)
 	}
@@ -159,17 +159,18 @@ func TestCleanupTestDatabase(t *testing.T) {
 		t.Error("optimizer_060102150405_xxxxxxxxxxxxxxxx exist, should be dropped")
 	}
 
-	_, err = vEnv.Query("drop database if exists optimizer_060102150405")
-	if err == nil {
-		t.Error("optimizer_060102150405_xxxxxxxxxxxxxxxx exist, should be dropped")
-	}
-
-	_, err = vEnv.Query("create database optimizer_060102150405")
+	_, err = vEnv.Query("DROP DATABASE IF EXISTS optimizer_060102150405")
 	if err != nil {
 		t.Error(err)
 	}
+
+	_, err = vEnv.Query("CREATE DATABASE optimizer_060102150405")
+	if err != nil {
+		t.Error(err)
+	}
+
 	vEnv.CleanupTestDatabase()
-	_, err = vEnv.Query("drop database optimizer_060102150405")
+	_, err = vEnv.Query("DROP DATABASE optimizer_060102150405")
 	if err != nil {
 		t.Error("optimizer_060102150405 not exist, should not be dropped")
 	}

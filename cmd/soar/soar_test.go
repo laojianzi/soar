@@ -22,6 +22,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/XiaoMi/soar/common"
@@ -55,7 +56,7 @@ func Test_Main(_ *testing.T) {
 	common.Config.LogLevel = 0
 	common.Config.Query = "select * syntaxError"
 	main()
-	common.Config.Query = "SELECT * FROM film;ALTER TABLE city ADD index idx_country_id(country_id);"
+	common.Config.Query = "SELECT * FROM film;ALTER TABLE city ADD INDEX idx_country_id(country_id);"
 	main()
 	common.Log.Debug("Exiting function: %s", common.GetFunctionName())
 }
@@ -65,7 +66,7 @@ func Test_Main_More(_ *testing.T) {
 	common.Config.LogLevel = 0
 	common.Config.Profiling = true
 	common.Config.Explain = true
-	common.Config.Query = "SELECT * FROM film WHERE country_id = 1;use sakila;ALTER TABLE city ADD index idx_country_id(country_id);"
+	common.Config.Query = "SELECT * FROM film WHERE country_id = 1;USE sakila;ALTER TABLE city ADD INDEX idx_country_id(country_id);"
 	orgRerportType := common.Config.ReportType
 	for _, typ := range []string{
 		"json", "html", "markdown", "fingerprint", "compress", "pretty", "rewrite",
@@ -87,7 +88,9 @@ func Test_Main_initQuery(t *testing.T) {
 	}
 
 	oldDevPath := common.DevPath
-	common.DevPath = filepath.Join(oldDevPath, "..")
+	if dirList := strings.Split(common.DevPath, string(os.PathSeparator)); dirList[len(dirList)-1] == "cmd" {
+		common.DevPath = filepath.Join(common.DevPath, "..")
+	}
 
 	// read from file
 	initQuery(filepath.Join(common.DevPath, "README.md"))

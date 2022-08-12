@@ -51,12 +51,12 @@ func GoldenDiff(f func(), name string, update *bool) error {
 			return err
 		}
 	}
-	g, err := ioutil.ReadFile(gp)
+	want, err := ioutil.ReadFile(gp)
 	if err != nil {
 		err = fmt.Errorf("%s failed reading .golden: %s", name, err)
 	}
-	if !bytes.Equal(b.Bytes(), g) {
-		err = fmt.Errorf("%s does not match .golden file", name)
+	if got := b.Bytes(); !bytes.Equal(got, want) {
+		err = fmt.Errorf("%s does not match .golden file\nwant: \n%s\ngot: \n%s", name, want, got)
 	}
 	return err
 }

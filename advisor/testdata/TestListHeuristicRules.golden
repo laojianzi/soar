@@ -10,7 +10,7 @@
 * **Case**:
 
 ```sql
-select name from tbl t1 where id < 1000
+SELECT name FROM tbl t1 WHERE id < 1000
 ```
 ## 不建议给列通配符'\*'设置别名
 
@@ -20,7 +20,7 @@ select name from tbl t1 where id < 1000
 * **Case**:
 
 ```sql
-select tbl.* as c1,c2,c3 from tbl where id < 1000
+SELECT tbl.* AS c1,c2,c3 FROM tbl WHERE id < 1000
 ```
 ## 别名不要与表或列的名字相同
 
@@ -30,7 +30,7 @@ select tbl.* as c1,c2,c3 from tbl where id < 1000
 * **Case**:
 
 ```sql
-select name from tbl as tbl where id < 1000
+SELECT name FROM tbl AS tbl WHERE id < 1000
 ```
 ## 修改表的默认字符集不会改表各个字段的字符集
 
@@ -50,7 +50,7 @@ ALTER TABLE tbl_name CONVERT TO CHARACTER SET charset_name;
 * **Case**:
 
 ```sql
-ALTER TABLE tbl ADD COLUMN col int, ADD INDEX idx_col (`col`);
+ALTER TABLE tbl ADD COLUMN col INT, ADD INDEX idx_col (`col`);
 ```
 ## 删除列为高危操作，操作前请注意检查业务逻辑是否还有依赖
 
@@ -80,7 +80,7 @@ ALTER TABLE tbl DROP PRIMARY KEY;
 * **Case**:
 
 ```sql
-select c1,c2,c3 from tbl where name like '%foo'
+SELECT c1,c2,c3 FROM tbl WHERE name LIKE '%foo'
 ```
 ## 没有通配符的 LIKE 查询
 
@@ -90,7 +90,7 @@ select c1,c2,c3 from tbl where name like '%foo'
 * **Case**:
 
 ```sql
-select c1,c2,c3 from tbl where name like 'foo'
+SELECT c1,c2,c3 FROM tbl WHERE name LIKE 'foo'
 ```
 ## 参数比较包含隐式转换，无法使用索引
 
@@ -120,7 +120,7 @@ SELECT * FROM tb WHERE col IN (NULL);
 * **Case**:
 
 ```sql
-select id from t where num in(1,2,3)
+SELECT id FROM t WHERE num IN(1,2,3)
 ```
 ## 应尽量避免在 WHERE 子句中对字段进行 NULL 值判断
 
@@ -130,7 +130,7 @@ select id from t where num in(1,2,3)
 * **Case**:
 
 ```sql
-select id from t where num is null
+SELECT id FROM t WHERE num IS NULL
 ```
 ## 避免使用模式匹配
 
@@ -140,7 +140,7 @@ select id from t where num is null
 * **Case**:
 
 ```sql
-select c_id,c2,c3 from tbl where c2 like 'test%'
+SELECT c_id,c2,c3 FROM tbl WHERE c2 LIKE 'test%'
 ```
 ## OR 查询索引列时请尽量使用 IN 谓词
 
@@ -180,7 +180,7 @@ SELECT * FROM t1 USE INDEX (i1) ORDER BY a;
 * **Case**:
 
 ```sql
-select id from t where num not in(1,2,3);
+SELECT id FROM t WHERE num NOT IN(1,2,3);
 ```
 ## 一次性 INSERT/REPLACE 的数据过多
 
@@ -200,7 +200,7 @@ INSERT INTO tb (a) VALUES (1), (2)
 * **Case**:
 
 ```sql
-CREATE TABLE tb (a varchar(10) default '“”'
+CREATE TABLE tb (a VARCHAR(10) DEFAULT '“”'
 ```
 ## IN 条件中存在列名，可能导致数据匹配范围扩大
 
@@ -210,7 +210,7 @@ CREATE TABLE tb (a varchar(10) default '“”'
 * **Case**:
 
 ```sql
-select id from t where id in(1, 2, id)
+SELECT id FROM t WHERE id IN(1, 2, id)
 ```
 ## 最外层 SELECT 未指定 WHERE 条件
 
@@ -220,7 +220,7 @@ select id from t where id in(1, 2, id)
 * **Case**:
 
 ```sql
-select id from tbl
+SELECT id FROM tbl
 ```
 ## 不建议使用 ORDER BY RAND()
 
@@ -230,7 +230,7 @@ select id from tbl
 * **Case**:
 
 ```sql
-select name from tbl where id < 1000 order by rand(number)
+SELECT name FROM tbl WHERE id < 1000 ORDER BY rand(number)
 ```
 ## 不建议使用带 OFFSET 的LIMIT 查询
 
@@ -240,7 +240,7 @@ select name from tbl where id < 1000 order by rand(number)
 * **Case**:
 
 ```sql
-select c1,c2 from tbl where name=xx order by number limit 1 offset 20
+SELECT c1,c2 FROM tbl WHERE name=xx ORDER BY number limit 1 OFFSET 20
 ```
 ## 不建议对常量进行 GROUP BY
 
@@ -250,7 +250,7 @@ select c1,c2 from tbl where name=xx order by number limit 1 offset 20
 * **Case**:
 
 ```sql
-select col1,col2 from tbl group by 1
+SELECT col1,col2 FROM tbl GROUP BY 1
 ```
 ## ORDER BY 常数列没有任何意义
 
@@ -260,7 +260,7 @@ select col1,col2 from tbl group by 1
 * **Case**:
 
 ```sql
-select id from test where id=1 order by id
+SELECT id FROM test WHERE id=1 ORDER BY id
 ```
 ## 在不同的表中 GROUP BY 或 ORDER BY
 
@@ -270,7 +270,7 @@ select id from test where id=1 order by id
 * **Case**:
 
 ```sql
-select tb1.col, tb2.col from tb1, tb2 where id=1 group by tb1.col, tb2.col
+SELECT tb1.col, tb2.col FROM tb1, tb2 WHERE id=1 GROUP BY tb1.col, tb2.col
 ```
 ## ORDER BY 语句对多个不同条件使用不同方向的排序无法使用索引
 
@@ -280,7 +280,7 @@ select tb1.col, tb2.col from tb1, tb2 where id=1 group by tb1.col, tb2.col
 * **Case**:
 
 ```sql
-select c1,c2,c3 from t1 where c1='foo' order by c2 desc, c3 asc
+SELECT c1,c2,c3 FROM t1 WHERE c1='foo' ORDER BY c2 DESC, c3 ASC
 ```
 ## 请为 GROUP BY 显示添加 ORDER BY 条件
 
@@ -290,7 +290,7 @@ select c1,c2,c3 from t1 where c1='foo' order by c2 desc, c3 asc
 * **Case**:
 
 ```sql
-select c1,c2,c3 from t1 where c1='foo' group by c2
+SELECT c1,c2,c3 FROM t1 WHERE c1='foo' GROUP BY c2
 ```
 ## ORDER BY 的条件为表达式
 
@@ -300,7 +300,7 @@ select c1,c2,c3 from t1 where c1='foo' group by c2
 * **Case**:
 
 ```sql
-select description from film where title ='ACADEMY DINOSAUR' order by length-language_id;
+SELECT description FROM film WHERE title ='ACADEMY DINOSAUR' ORDER BY length-language_id;
 ```
 ## GROUP BY 的条件为表达式
 
@@ -310,7 +310,7 @@ select description from film where title ='ACADEMY DINOSAUR' order by length-lan
 * **Case**:
 
 ```sql
-select description from film where title ='ACADEMY DINOSAUR' GROUP BY length-language_id;
+SELECT description FROM film WHERE title ='ACADEMY DINOSAUR' GROUP BY length-language_id;
 ```
 ## 建议为表添加注释
 
@@ -320,7 +320,7 @@ select description from film where title ='ACADEMY DINOSAUR' GROUP BY length-lan
 * **Case**:
 
 ```sql
-CREATE TABLE `test1` (`ID` bigint(20) NOT NULL AUTO_INCREMENT,`c1` varchar(128) DEFAULT NULL,PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8
+CREATE TABLE `test1` (`ID` bigint(20) NOT NULL AUTO_INCREMENT,`c1` VARCHAR(128) DEFAULT NULL,PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ```
 ## 将复杂的裹脚布式查询分解成几个简单的查询
 
@@ -340,7 +340,7 @@ CREATE TABLE `test1` (`ID` bigint(20) NOT NULL AUTO_INCREMENT,`c1` varchar(128) 
 * **Case**:
 
 ```sql
-SELECT s.c_id,count(s.c_id) FROM s where c = test GROUP BY s.c_id HAVING s.c_id <> '1660' AND s.c_id <> '2' order by s.c_id
+SELECT s.c_id,COUNT(s.c_id) FROM s WHERE c = test GROUP BY s.c_id HAVING s.c_id <> '1660' AND s.c_id <> '2' ORDER BY s.c_id
 ```
 ## 删除全表时建议使用 TRUNCATE 替代 DELETE
 
@@ -350,7 +350,7 @@ SELECT s.c_id,count(s.c_id) FROM s where c = test GROUP BY s.c_id HAVING s.c_id 
 * **Case**:
 
 ```sql
-delete from tbl
+DELETE FROM tbl
 ```
 ## UPDATE 未指定 WHERE 条件
 
@@ -360,7 +360,7 @@ delete from tbl
 * **Case**:
 
 ```sql
-update tbl set col=1
+UPDATE tbl SET col=1
 ```
 ## 不要 UPDATE 主键
 
@@ -370,7 +370,7 @@ update tbl set col=1
 * **Case**:
 
 ```sql
-update tbl set col=1
+UPDATE tbl SET col=1
 ```
 ## 不建议使用 SELECT \* 类型查询
 
@@ -380,7 +380,7 @@ update tbl set col=1
 * **Case**:
 
 ```sql
-select * from tbl where id=1
+SELECT * FROM tbl WHERE id=1
 ```
 ## INSERT/REPLACE 未指定列名
 
@@ -390,7 +390,7 @@ select * from tbl where id=1
 * **Case**:
 
 ```sql
-insert into tbl values(1,'name')
+INSERT INTO tbl VALUES(1,'name')
 ```
 ## 建议修改自增 ID 为无符号类型
 
@@ -400,7 +400,7 @@ insert into tbl values(1,'name')
 * **Case**:
 
 ```sql
-create table test(`id` int(11) NOT NULL AUTO_INCREMENT)
+CREATE TABLE test(`id` INT(11) NOT NULL AUTO_INCREMENT)
 ```
 ## 请为列添加默认值
 
@@ -410,7 +410,7 @@ create table test(`id` int(11) NOT NULL AUTO_INCREMENT)
 * **Case**:
 
 ```sql
-CREATE TABLE tbl (col int) ENGINE=InnoDB;
+CREATE TABLE tbl (col INT) ENGINE=InnoDB;
 ```
 ## 列未添加注释
 
@@ -420,7 +420,7 @@ CREATE TABLE tbl (col int) ENGINE=InnoDB;
 * **Case**:
 
 ```sql
-CREATE TABLE tbl (col int) ENGINE=InnoDB;
+CREATE TABLE tbl (col INT) ENGINE=InnoDB;
 ```
 ## 表中包含有太多的列
 
@@ -450,7 +450,7 @@ CREATE TABLE tbl ( cols ....);
 * **Case**:
 
 ```sql
-create table t1(id int,name char(20),last_time date)
+CREATE TABLE t1(id INT,name CHAR(20),last_time DATE)
 ```
 ## 建议使用精确的数据类型
 
@@ -460,7 +460,7 @@ create table t1(id int,name char(20),last_time date)
 * **Case**:
 
 ```sql
-CREATE TABLE tab2 (p_id  BIGINT UNSIGNED NOT NULL,a_id  BIGINT UNSIGNED NOT NULL,hours float not null,PRIMARY KEY (p_id, a_id))
+CREATE TABLE tab2 (p_id  BIGINT UNSIGNED NOT NULL,a_id  BIGINT UNSIGNED NOT NULL,hours FLOAT NOT NULL,PRIMARY KEY (p_id, a_id))
 ```
 ## 不建议使用 ENUM/BIT/SET 数据类型
 
@@ -470,7 +470,7 @@ CREATE TABLE tab2 (p_id  BIGINT UNSIGNED NOT NULL,a_id  BIGINT UNSIGNED NOT NULL
 * **Case**:
 
 ```sql
-create table tab1(status ENUM('new','in progress','fixed'))
+CREATE TABLE tab1(status ENUM('new','in progress','fixed'))
 ```
 ## 当需要唯一约束时才使用 NULL，仅当列不能有缺失值时才使用 NOT NULL
 
@@ -480,7 +480,7 @@ create table tab1(status ENUM('new','in progress','fixed'))
 * **Case**:
 
 ```sql
-select c1,c2,c3 from tbl where c4 is null or c4 <> 1
+SELECT c1,c2,c3 FROM tbl WHERE c4 IS NULL OR c4 <> 1
 ```
 ## TEXT、BLOB 和 JSON 类型的字段不建议设置为 NOT NULL
 
@@ -500,7 +500,7 @@ CREATE TABLE `tb`(`c` longblob NOT NULL);
 * **Case**:
 
 ```sql
-CREATE TABLE tbl( `id` bigint not null, `create_time` timestamp);
+CREATE TABLE tbl( `id` bigint NOT NULL, `create_time` TIMESTAMP);
 ```
 ## 为列指定了字符集
 
@@ -510,7 +510,7 @@ CREATE TABLE tbl( `id` bigint not null, `create_time` timestamp);
 * **Case**:
 
 ```sql
-CREATE TABLE `tb2` ( `id` int(11) DEFAULT NULL, `col` char(10) CHARACTER SET utf8 DEFAULT NULL)
+CREATE TABLE `tb2` ( `id` INT(11) DEFAULT NULL, `col` CHAR(10) CHARACTER SET utf8 DEFAULT NULL)
 ```
 ## TEXT、BLOB 和 JSON 类型的字段不可指定非 NULL 的默认值
 
@@ -540,7 +540,7 @@ CREATE TABLE tab (a INT(1));
 * **Case**:
 
 ```sql
-CREATE TABLE tab (a varchar(3500));
+CREATE TABLE tab (a VARCHAR(3500));
 ```
 ## 建表语句中使用了不推荐的字段类型
 
@@ -570,7 +570,7 @@ CREATE TABLE t1 (t TIME(3), dt DATETIME(6));
 * **Case**:
 
 ```sql
-SELECT DISTINCT c.c_id,count(DISTINCT c.c_name),count(DISTINCT c.c_e),count(DISTINCT c.c_n),count(DISTINCT c.c_me),c.c_d FROM (select distinct id, name from B) as e WHERE e.country_id = c.country_id
+SELECT DISTINCT c.c_id,COUNT(DISTINCT c.c_name),COUNT(DISTINCT c.c_e),COUNT(DISTINCT c.c_n),COUNT(DISTINCT c.c_me),c.c_d FROM (SELECT DISTINCT id, name FROM B) AS e WHERE e.country_id = c.country_id
 ```
 ## COUNT(DISTINCT) 多列时结果可能和你预想的不同
 
@@ -600,7 +600,7 @@ SELECT DISTINCT * FROM film;
 * **Case**:
 
 ```sql
-select id from t where substring(name,1,3)='abc'
+SELECT id FROM t WHERE SUBSTRING(name,1,3)='abc'
 ```
 ## 指定了 WHERE 条件或非 MyISAM 引擎时使用 COUNT(\*) 操作性能不佳
 
@@ -610,7 +610,7 @@ select id from t where substring(name,1,3)='abc'
 * **Case**:
 
 ```sql
-SELECT c3, COUNT(*) AS accounts FROM tab where c2 < 10000 GROUP BY c3 ORDER BY num
+SELECT c3, COUNT(*) AS accounts FROM tab WHERE c2 < 10000 GROUP BY c3 ORDER BY num
 ```
 ## 使用了合并为可空列的字符串连接
 
@@ -620,7 +620,7 @@ SELECT c3, COUNT(*) AS accounts FROM tab where c2 < 10000 GROUP BY c3 ORDER BY n
 * **Case**:
 
 ```sql
-select c1 || coalesce(' ' || c2 || ' ', ' ') || c3 as c from tbl
+SELECT c1 || COALESCE(' ' || c2 || ' ', ' ') || c3 AS c FROM tbl
 ```
 ## 不建议使用 SYSDATE() 函数
 
@@ -690,7 +690,7 @@ CREATE FUNCTION hello (s CHAR(20));
 * **Case**:
 
 ```sql
-select film_id, title from film where release_year='2006' group by release_year
+SELECT film_id, title FROM film WHERE release_year='2006' GROUP BY release_year
 ```
 ## JOIN 语句混用逗号和 ANSI 模式
 
@@ -700,7 +700,7 @@ select film_id, title from film where release_year='2006' group by release_year
 * **Case**:
 
 ```sql
-select c1,c2,c3 from t1,t2 join t3 on t1.c1=t2.c1,t1.c3=t3,c1 where id>1000
+SELECT c1,c2,c3 FROM t1,t2 JOIN t3 ON t1.c1=t2.c1,t1.c3=t3,c1 WHERE id>1000
 ```
 ## 同一张表被连接两次
 
@@ -710,7 +710,7 @@ select c1,c2,c3 from t1,t2 join t3 on t1.c1=t2.c1,t1.c3=t3,c1 where id>1000
 * **Case**:
 
 ```sql
-select tb1.col from (tb1, tb2) join tb2 on tb1.id=tb.id where tb1.id=1
+SELECT tb1.col FROM (tb1, tb2) JOIN tb2 ON tb1.id=tb.id WHERE tb1.id=1
 ```
 ## OUTER JOIN 失效
 
@@ -720,7 +720,7 @@ select tb1.col from (tb1, tb2) join tb2 on tb1.id=tb.id where tb1.id=1
 * **Case**:
 
 ```sql
-select c1,c2,c3 from t1 left outer join t2 using(c1) where t1.c2=2 and t2.c3=4
+SELECT c1,c2,c3 FROM t1 LEFT OUTER JOIN t2 USING(c1) WHERE t1.c2=2 AND t2.c3=4
 ```
 ## 不建议使用排它 JOIN
 
@@ -730,7 +730,7 @@ select c1,c2,c3 from t1 left outer join t2 using(c1) where t1.c2=2 and t2.c3=4
 * **Case**:
 
 ```sql
-select c1,c2,c3 from t1 left outer join t2 on t1.c1=t2.c1 where t2.c2 is null
+SELECT c1,c2,c3 FROM t1 LEFT OUTER JOIN t2 ON t1.c1=t2.c1 WHERE t2.c2 IS NULL
 ```
 ## 减少 JOIN 的数量
 
@@ -740,7 +740,7 @@ select c1,c2,c3 from t1 left outer join t2 on t1.c1=t2.c1 where t2.c2 is null
 * **Case**:
 
 ```sql
-select bp1.p_id, b1.d_d as l, b1.b_id from b1 join bp1 on (b1.b_id = bp1.b_id) left outer join (b1 as b2 join bp2 on (b2.b_id = bp2.b_id)) on (bp1.p_id = bp2.p_id ) join bp21 on (b1.b_id = bp1.b_id) join bp31 on (b1.b_id = bp1.b_id) join bp41 on (b1.b_id = bp1.b_id) where b2.b_id = 0
+SELECT bp1.p_id, b1.d_d AS l, b1.b_id FROM b1 JOIN bp1 ON (b1.b_id = bp1.b_id) LEFT OUTER JOIN (b1 AS b2 JOIN bp2 ON (b2.b_id = bp2.b_id)) ON (bp1.p_id = bp2.p_id ) JOIN bp21 ON (b1.b_id = bp1.b_id) JOIN bp31 ON (b1.b_id = bp1.b_id) JOIN bp41 ON (b1.b_id = bp1.b_id) WHERE b2.b_id = 0
 ```
 ## 将嵌套查询重写为 JOIN 通常会导致更高效的执行和更有效的优化
 
@@ -780,7 +780,7 @@ SELECT s,p,d FROM tbl WHERE p.p_id = (SELECT s.p_id FROM tbl WHERE s.c_id = 1009
 * **Case**:
 
 ```sql
-create table test(`id` int(11) NOT NULL PRIMARY KEY (`id`))
+CREATE TABLE test(`id` INT(11) NOT NULL PRIMARY KEY (`id`))
 ```
 ## 无主键或唯一键，无法在线变更表结构
 
@@ -790,7 +790,7 @@ create table test(`id` int(11) NOT NULL PRIMARY KEY (`id`))
 * **Case**:
 
 ```sql
-create table test(col varchar(5000))
+CREATE TABLE test(col VARCHAR(5000))
 ```
 ## 避免外键等递归关系
 
@@ -820,7 +820,7 @@ create index idx1 on tbl (last_name,first_name)
 * **Case**:
 
 ```sql
-CREATE TABLE tbl ( a int, b int, c int, KEY idx_a (`a`),KEY idx_b(`b`),KEY idx_c(`c`));
+CREATE TABLE tbl ( a INT, b INT, c INT, KEY idx_a (`a`),KEY idx_b(`b`),KEY idx_c(`c`));
 ```
 ## 主键中的列过多
 
@@ -830,7 +830,7 @@ CREATE TABLE tbl ( a int, b int, c int, KEY idx_a (`a`),KEY idx_b(`b`),KEY idx_c
 * **Case**:
 
 ```sql
-CREATE TABLE tbl ( a int, b int, c int, PRIMARY KEY(`a`,`b`,`c`));
+CREATE TABLE tbl ( a INT, b INT, c INT, PRIMARY KEY(`a`,`b`,`c`));
 ```
 ## 未指定主键或主键非 int 或 bigint
 
@@ -840,7 +840,7 @@ CREATE TABLE tbl ( a int, b int, c int, PRIMARY KEY(`a`,`b`,`c`));
 * **Case**:
 
 ```sql
-CREATE TABLE tbl (a int);
+CREATE TABLE tbl (a INT);
 ```
 ## ORDER BY 多个列但排序方向不同时可能无法使用索引
 
@@ -870,7 +870,7 @@ CREATE UNIQUE INDEX part_of_name ON customer (name(10));
 * **Case**:
 
 ```sql
-CREATE TABLE `tb` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `ip` varchar(255) NOT NULL DEFAULT '', PRIMARY KEY (`id`), FULLTEXT KEY `ip` (`ip`) ) ENGINE=InnoDB;
+CREATE TABLE `tb` ( `id` INT(10) unsigned NOT NULL AUTO_INCREMENT, `ip` VARCHAR(255) NOT NULL DEFAULT '', PRIMARY KEY (`id`), FULLTEXT KEY `ip` (`ip`) ) ENGINE=InnoDB;
 ```
 ## SQL\_CALC\_FOUND\_ROWS 效率低下
 
@@ -880,7 +880,7 @@ CREATE TABLE `tb` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `ip` varchar(
 * **Case**:
 
 ```sql
-select SQL_CALC_FOUND_ROWS col from tbl where id>1000
+SELECT SQL_CALC_FOUND_ROWS col FROM tbl WHERE id>1000
 ```
 ## 不建议使用 MySQL 关键字做列名或表名
 
@@ -890,7 +890,7 @@ select SQL_CALC_FOUND_ROWS col from tbl where id>1000
 * **Case**:
 
 ```sql
-CREATE TABLE tbl ( `select` int )
+CREATE TABLE tbl ( `select` INT )
 ```
 ## 不建议使用复数做列名或表名
 
@@ -900,7 +900,7 @@ CREATE TABLE tbl ( `select` int )
 * **Case**:
 
 ```sql
-CREATE TABLE tbl ( `books` int )
+CREATE TABLE tbl ( `books` INT )
 ```
 ## 不建议使用使用多字节编码字符(中文)命名
 
@@ -910,7 +910,7 @@ CREATE TABLE tbl ( `books` int )
 * **Case**:
 
 ```sql
-select col as 列 from tb
+SELECT col AS 列 FROM tb
 ```
 ## SQL 中包含 unicode 特殊字符
 
@@ -940,7 +940,7 @@ INSERT INTO tbl SELECT * FROM tbl2;
 * **Case**:
 
 ```sql
-INSERT INTO t1(a,b,c) VALUES (1,2,3) ON DUPLICATE KEY UPDATE c=c+1;
+INSERT INTO t1(a,b,c) VALUES (1,2,3) ON DUPLICATE KEY UPDATE C=C+1;
 ```
 ## 用字符类型存储IP地址
 
@@ -950,7 +950,7 @@ INSERT INTO t1(a,b,c) VALUES (1,2,3) ON DUPLICATE KEY UPDATE c=c+1;
 * **Case**:
 
 ```sql
-insert into tbl (IP,name) values('10.20.306.122','test')
+INSERT INTO tbl (IP,name) VALUES('10.20.306.122','test')
 ```
 ## 日期/时间未使用引号括起
 
@@ -960,7 +960,7 @@ insert into tbl (IP,name) values('10.20.306.122','test')
 * **Case**:
 
 ```sql
-select col1,col2 from tbl where time < 2018-01-10
+SELECT col1,col2 FROM tbl WHERE TIME < 2018-01-10
 ```
 ## 一列中存储一系列相关数据的集合
 
@@ -970,7 +970,7 @@ select col1,col2 from tbl where time < 2018-01-10
 * **Case**:
 
 ```sql
-select c1,c2,c3,c4 from tab1 where col_id REGEXP '[[:<:]]12[[:>:]]'
+SELECT c1,c2,c3,c4 FROM tab1 WHERE col_id REGEXP '[[:<:]]12[[:>:]]'
 ```
 ## 请使用分号或已设定的 DELIMITER 结尾
 
@@ -990,7 +990,7 @@ USE db
 * **Case**:
 
 ```sql
-select c1,c2,c3 from t1 where c2='foo' group by c2
+SELECT c1,c2,c3 FROM t1 WHERE c2='foo' GROUP BY c2
 ```
 ## 未使用 ORDER BY 的 LIMIT 查询
 
@@ -1000,7 +1000,7 @@ select c1,c2,c3 from t1 where c2='foo' group by c2
 * **Case**:
 
 ```sql
-select col1,col2 from tbl where name=xx limit 10
+SELECT col1,col2 FROM tbl WHERE name=xx limit 10
 ```
 ## UPDATE/DELETE 操作使用了 LIMIT 条件
 
@@ -1030,7 +1030,7 @@ UPDATE film SET length = 120 WHERE title = 'abc' ORDER BY title
 * **Case**:
 
 ```sql
-update tbl set col = 1 and cl = 2 where col=3;
+UPDATE tbl SET col = 1 AND cl = 2 WHERE col=3;
 ```
 ## 永远不真的比较条件
 
@@ -1040,7 +1040,7 @@ update tbl set col = 1 and cl = 2 where col=3;
 * **Case**:
 
 ```sql
-select * from tbl where 1 != 1;
+SELECT * FROM tbl WHERE 1 != 1;
 ```
 ## 永远为真的比较条件
 
@@ -1050,7 +1050,7 @@ select * from tbl where 1 != 1;
 * **Case**:
 
 ```sql
-select * from tbl where 1 = 1;
+SELECT * FROM tbl WHERE 1 = 1;
 ```
 ## 不建议使用LOAD DATA/SELECT ... INTO OUTFILE
 
@@ -1110,7 +1110,7 @@ TRUNCATE TABLE tbl_name
 * **Case**:
 
 ```sql
-create table test(id int,name varchar(20) not null,password varchar(200)not null)
+CREATE TABLE test(id INT,name VARCHAR(20) NOT NULL,password VARCHAR(200)NOT NULL)
 ```
 ## 使用DELETE/DROP/TRUNCATE等操作时注意备份
 
@@ -1120,7 +1120,7 @@ create table test(id int,name varchar(20) not null,password varchar(200)not null
 * **Case**:
 
 ```sql
-delete from table where col = 'condition'
+DELETE FROM table WHERE col = 'condition'
 ```
 ## 发现常见 SQL 注入函数
 
@@ -1140,7 +1140,7 @@ SELECT BENCHMARK(10, RAND())
 * **Case**:
 
 ```sql
-select col1,col2 from tbl where type!=0
+SELECT col1,col2 FROM tbl WHERE type!=0
 ```
 ## 库名或表名点后建议不要加空格
 
@@ -1150,7 +1150,7 @@ select col1,col2 from tbl where type!=0
 * **Case**:
 
 ```sql
-select col from sakila. film
+SELECT col FROM sakila. film
 ```
 ## 索引起名不规范
 
@@ -1160,7 +1160,7 @@ select col from sakila. film
 * **Case**:
 
 ```sql
-select col from now where type!=0
+SELECT col FROM now WHERE type!=0
 ```
 ## 起名时请不要使用字母、数字和下划线之外的字符
 
@@ -1170,7 +1170,7 @@ select col from now where type!=0
 * **Case**:
 
 ```sql
-CREATE TABLE ` abc` (a int);
+CREATE TABLE ` abc` (a INT);
 ```
 ## MySQL 对子查询的优化效果不佳
 
@@ -1180,7 +1180,7 @@ CREATE TABLE ` abc` (a int);
 * **Case**:
 
 ```sql
-select col1,col2,col3 from table1 where col2 in(select col from table2)
+SELECT col1,col2,col3 FROM table1 WHERE col2 IN(SELECT col FROM table2)
 ```
 ## 如果您不在乎重复的话，建议使用 UNION ALL 替代 UNION
 
@@ -1190,7 +1190,7 @@ select col1,col2,col3 from table1 where col2 in(select col from table2)
 * **Case**:
 
 ```sql
-select teacher_id as id,people_name as name from t1,t2 where t1.teacher_id=t2.people_id union select student_id as id,people_name as name from t1,t2 where t1.student_id=t2.people_id
+SELECT teacher_id AS id,people_name AS name FROM t1,t2 WHERE t1.teacher_id=t2.people_id UNION SELECT student_id AS id,people_name AS name FROM t1,t2 WHERE t1.student_id=t2.people_id
 ```
 ## 考虑使用 EXISTS 而不是 DISTINCT 子查询
 
@@ -1210,7 +1210,7 @@ SELECT DISTINCT c.c_id, c.c_name FROM c,e WHERE e.c_id = c.c_id
 * **Case**:
 
 ```sql
-SELECT * from tb where id in (select id from (select id from tb))
+SELECT * FROM tb WHERE id IN (SELECT id FROM (SELECT id FROM tb))
 ```
 ## 子查询不支持LIMIT
 
@@ -1230,7 +1230,7 @@ SELECT * FROM staff WHERE name IN (SELECT NAME FROM customer ORDER BY name LIMIT
 * **Case**:
 
 ```sql
-SELECT * FROM staff WHERE name IN (SELECT max(NAME) FROM customer)
+SELECT * FROM staff WHERE name IN (SELECT MAX(NAME) FROM customer)
 ```
 ## 外层带有 LIMIT 输出限制的 UNION 联合查询，其内层查询建议也添加 LIMIT 输出限制
 
@@ -1260,7 +1260,7 @@ CREATE TABLE trb3(id INT, name VARCHAR(50), purchased DATE) PARTITION BY RANGE(Y
 * **Case**:
 
 ```sql
-create table test(`id` int(11) NOT NULL AUTO_INCREMENT)
+CREATE TABLE test(`id` INT(11) NOT NULL AUTO_INCREMENT)
 ```
 ## 以DUAL命名的表在数据库中有特殊含义
 
@@ -1270,7 +1270,7 @@ create table test(`id` int(11) NOT NULL AUTO_INCREMENT)
 * **Case**:
 
 ```sql
-create table dual(id int, primary key (id));
+CREATE TABLE dual(id INT, PRIMARY KEY (id));
 ```
 ## 表的初始AUTO\_INCREMENT值不为0
 
@@ -1280,7 +1280,7 @@ create table dual(id int, primary key (id));
 * **Case**:
 
 ```sql
-CREATE TABLE tbl (a int) AUTO_INCREMENT = 10;
+CREATE TABLE tbl (a INT) AUTO_INCREMENT = 10;
 ```
 ## 请使用推荐的字符集
 
@@ -1290,7 +1290,7 @@ CREATE TABLE tbl (a int) AUTO_INCREMENT = 10;
 * **Case**:
 
 ```sql
-CREATE TABLE tbl (a int) DEFAULT CHARSET = latin1;
+CREATE TABLE tbl (a INT) DEFAULT CHARSET = latin1;
 ```
 ## 不建议使用视图
 
@@ -1320,5 +1320,5 @@ CREATE TEMPORARY TABLE `work` (`time` time DEFAULT NULL) ENGINE=InnoDB;
 * **Case**:
 
 ```sql
-CREATE TABLE tbl (a int) DEFAULT COLLATE = latin1_bin;
+CREATE TABLE tbl (a INT) DEFAULT COLLATE = latin1_bin;
 ```

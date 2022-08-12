@@ -77,7 +77,7 @@ fmt: go_version_check
 .PHONY: test
 test:
 	@echo "$(CGREEN)Run all test cases ...$(CEND)"
-	@go test $(LDFLAGS) -timeout 10m -race ./...
+	@go test $(LDFLAGS) -v -race -timeout 10m ./...
 	@echo "test Success!"
 
 # Rule golang test cases with `-update` flag
@@ -98,11 +98,11 @@ test-cli: build
 # Code Coverage
 # colorful coverage numerical >=90% GREEN, <80% RED, Other YELLOW
 .PHONY: cover
-cover: test
+cover:
 	@echo "$(CGREEN)Run test cover check ...$(CEND)"
-	@go test $(LDFLAGS) -coverpkg=./... -coverprofile=coverage.data ./... | column -t
-	@go tool cover -html=coverage.data -o coverage.html
-	@go tool cover -func=coverage.data -o coverage.txt
+	@go test $(LDFLAGS) -v -race -coverprofile=coverage -covermode=atomic ./...
+	@go tool cover -html=coverage -o coverage.html
+	@go tool cover -func=coverage -o coverage.txt
 	@tail -n 1 coverage.txt | awk '{sub(/%/, "", $$NF); \
 		if($$NF < 80) \
 			{print "$(CRED)"$$0"%$(CEND)"} \
