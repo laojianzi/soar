@@ -59,6 +59,7 @@ jobs:
         run: make build
       - name: Run docker
         run: make docker
+        if: ${{ matrix.platform != 'macos-latest' }}
       - name: Run tests with coverage
         run: make cover
       - name: Run cli tests
