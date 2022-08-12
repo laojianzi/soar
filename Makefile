@@ -19,7 +19,7 @@ VERSION_COMPILE := $(shell date +"%F %T %z") by $(shell go version)
 VERSION_BRANCH  := $(shell git rev-parse --abbrev-ref HEAD)
 VERSION_GIT_DIRTY := $(shell git diff --no-ext-diff 2>/dev/null | wc -l | awk '{print $1}')
 VERSION_DEV_PATH:= $(shell pwd)
-LDFLAGS=-ldflags="-s -w -X 'github.com/XiaoMi/soar/common.Version=$(VERSION_VERSION)' -X 'github.com/XiaoMi/soar/common.Compile=$(VERSION_COMPILE)' -X 'github.com/XiaoMi/soar/common.Branch=$(VERSION_BRANCH)' -X 'github.com/XiaoMi/soar/common.GitDirty=$(VERSION_GIT_DIRTY)' -X 'github.com/XiaoMi/soar/common.DevPath=$(VERSION_DEV_PATH)'"
+LDFLAGS=-ldflags="-s -w -X 'github.com/laojianzi/soar/common.Version=$(VERSION_VERSION)' -X 'github.com/laojianzi/soar/common.Compile=$(VERSION_COMPILE)' -X 'github.com/laojianzi/soar/common.Branch=$(VERSION_BRANCH)' -X 'github.com/laojianzi/soar/common.GitDirty=$(VERSION_GIT_DIRTY)' -X 'github.com/laojianzi/soar/common.DevPath=$(VERSION_DEV_PATH)'"
 
 # These are the values we want to pass for VERSION  and BUILD
 BUILD_TIME=`date +%Y%m%d%H%M`
@@ -115,10 +115,7 @@ cover:
 build: fmt
 	@echo "$(CGREEN)Building ...$(CEND)"
 	@mkdir -p bin
-	@ret=0 && for d in $$(go list -f '{{if (eq .Name "main")}}{{.ImportPath}}{{end}}' ./...); do \
-		b=$$(basename $${d}) ; \
-		go build ${LDFLAGS} ${GCFLAGS} -o bin/$${b} $$d || ret=$$? ; \
-	done ; exit $$ret
+	go build ${LDFLAGS} ${GCFLAGS} -o bin/ ./cmd/soar
 	@echo "build Success!"
 
 # Installs our project: copies binaries
@@ -139,8 +136,8 @@ doc: build
 .PHONY: heuristic
 heuristic: doc
 	@echo "$(CGREEN)Update Heuristic rule golden files ...$(CEND)"
-	go test github.com/XiaoMi/soar/advisor -v -update -run TestListHeuristicRules
-	go test github.com/XiaoMi/soar/advisor -v -update -run TestMergeConflictHeuristicRules
+	go test github.com/laojianzi/soar/advisor -v -update -run TestListHeuristicRules
+	go test github.com/laojianzi/soar/advisor -v -update -run TestMergeConflictHeuristicRules
 	docker stop soar-mysql 2>/dev/null || true
 
 # Update all vendor
@@ -190,7 +187,7 @@ docker:
 	-p 3306:3306 \
 	-v `pwd`/test/sql/init.sql.gz:/docker-entrypoint-initdb.d/init.sql.gz \
 	$(MYSQL_RELEASE):$(MYSQL_VERSION) \
-	--sql-mode ""
+	--sql-mode "" --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci --default_table_encryption=false
 
 	@echo "waiting for sakila database initializing "
 	@timeout=180; while [ $${timeout} -gt 0 ] ; do \

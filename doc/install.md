@@ -1,10 +1,10 @@
 ## 下载二进制安装包
 
 ```bash
-wget https://github.com/XiaoMi/soar/releases/download/${tag}/soar.${OS}-amd64 -O soar
+wget https://github.com/laojianzi/soar/releases/download/${tag}/soar.${OS}-amd64 -O soar
 chmod a+x soar
 如：
-wget https://github.com/XiaoMi/soar/releases/download/0.9.0/soar.linux-amd64 -O soar
+wget https://github.com/laojianzi/soar/releases/download/0.9.0/soar.linux-amd64 -O soar
 chmod a+x soar
 ```
 
@@ -27,8 +27,8 @@ chmod a+x soar
 ### 生成二进制文件
 
 ```bash
-go get -d github.com/XiaoMi/soar
-cd ${GOPATH}/src/github.com/XiaoMi/soar && make
+go get -d github.com/laojianzi/soar
+cd ${GOPATH}/src/github.com/laojianzi/soar && make
 ```
 
 ### 开发调试

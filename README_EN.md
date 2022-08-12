@@ -1,12 +1,12 @@
 # ![SOAR](https://raw.githubusercontent.com/XiaoMi/soar/master/doc/images/logo.png)
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/xiaomi-dba/soar)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://github.com/XiaoMi/soar/blob/master/LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/XiaoMi/soar)](https://goreportcard.com/report/github.com/XiaoMi/soar)
-[![Build Status](https://travis-ci.org/XiaoMi/soar.svg?branch=master)](https://travis-ci.org/XiaoMi/soar)
-[![GoDoc](https://godoc.org/github.com/XiaoMi/soar?status.svg)](https://godoc.org/github.com/XiaoMi/soar)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://github.com/laojianzi/soar/blob/master/LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/github.com/laojianzi/soar)](https://goreportcard.com/report/github.com/laojianzi/soar)
+[![Build Status](https://travis-ci.org/laojianzi/soar.svg?branch=master)](https://travis-ci.org/XiaoMi/soar)
+[![GoDoc](https://godoc.org/github.com/laojianzi/soar?status.svg)](https://godoc.org/github.com/laojianzi/soar)
 
-[Docs](http://github.com/XiaoMi/soar/tree/master/doc) | [FAQ](http://github.com/XiaoMi/soar/blob/master/doc/FAQ_en.md) | [中文](http://github.com/XiaoMi/soar/blob/master/README.md)
+[Docs](http://github.com/laojianzi/soar/tree/master/doc) | [FAQ](http://github.com/laojianzi/soar/blob/master/doc/FAQ_en.md) | [中文](http://github.com/laojianzi/soar/blob/master/README.md)
 
 ## SOAR
 
@@ -25,9 +25,9 @@ SOAR (SQL Optimizer And Rewriter) is a tool, which can help SQL optimization and
 
 ## QuickStart
 
-* [Install](http://github.com/XiaoMi/soar/blob/master/doc/install_en.md)
-* [CheatSheet](http://github.com/XiaoMi/soar/blob/master/doc/cheatsheet_en.md)
-* [Related works](http://github.com/XiaoMi/soar/blob/master/doc/comparison_en.md)
+* [Install](http://github.com/laojianzi/soar/blob/master/doc/install_en.md)
+* [CheatSheet](http://github.com/laojianzi/soar/blob/master/doc/cheatsheet_en.md)
+* [Related works](http://github.com/laojianzi/soar/blob/master/doc/comparison_en.md)
 
 ## Communication
 
@@ -37,4 +37,4 @@ SOAR (SQL Optimizer And Rewriter) is a tool, which can help SQL optimization and
 
 ## License
 
-[Apache License 2.0](https://github.com/XiaoMi/soar/blob/master/LICENSE).
+[Apache License 2.0](https://github.com/laojianzi/soar/blob/master/LICENSE).

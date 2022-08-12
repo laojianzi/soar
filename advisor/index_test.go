@@ -25,9 +25,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/XiaoMi/soar/common"
-	"github.com/XiaoMi/soar/database"
-	"github.com/XiaoMi/soar/env"
+	"github.com/laojianzi/soar/common"
+	"github.com/laojianzi/soar/database"
+	"github.com/laojianzi/soar/env"
 
 	"github.com/kr/pretty"
 	"vitess.io/vitess/go/vt/sqlparser"
@@ -97,7 +97,7 @@ func TestRuleImplicitConversion(t *testing.T) {
 		{
 			"SELECT * FROM t1 WHERE id = '1'", // string -> int can use index
 			"SELECT * FROM t1 WHERE id = 1",
-			"SELECT * FROM t4 WHERE col = 1", // https://github.com/XiaoMi/soar/issues/151
+			"SELECT * FROM t4 WHERE col = 1", // https://github.com/laojianzi/soar/issues/151
 			"SELECT * FROM sakila.film WHERE rental_rate > 1",
 		},
 	}

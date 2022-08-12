@@ -21,7 +21,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/XiaoMi/soar/common"
+	"github.com/laojianzi/soar/common"
 
 	json "github.com/CorgiMan/json2"
 	"github.com/kr/pretty"
@@ -39,7 +39,7 @@ func TiParse(sql, charset, collation string) ([]ast.StmtNode, error) {
 	sql = removeIncompatibleWords(sql)
 	stmt, warn, err := p.Parse(sql, charset, collation)
 	if err != nil {
-		// issue: https://github.com/XiaoMi/soar/issues/235
+		// issue: https://github.com/laojianzi/soar/issues/235
 		// TODO: bypass charset error, pingcap/parser not support so much charsets
 		if strings.Contains(err.Error(), "Unknown character set") {
 			err = nil

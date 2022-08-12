@@ -13,7 +13,7 @@
 
 官方不会提供 Web 界面支持，但社区已经有相当多的同学基于 SOAR 开发了衍生的 Web 平台。可以参考如下 ISSUE 的讨论。
 
-> https://github.com/XiaoMi/soar/issues/51
+> https://github.com/laojianzi/soar/issues/51
 
 ## 命令行参数 `test-dsn`, `online-dsn` 中包含特殊字符怎么办？
 

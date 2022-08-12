@@ -1,7 +1,7 @@
 #!/bin/bash
 
 METABIN=$(which gometalinter.v1)
-PROJECT_PATH=${GOPATH}/src/github.com/XiaoMi/soar/
+PROJECT_PATH=${GOPATH}/src/github.com/laojianzi/soar/
 
 if [ "x$METABIN" == "x" ]; then
 	go get -u gopkg.in/alecthomas/gometalinter.v1

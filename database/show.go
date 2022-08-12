@@ -22,7 +22,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/XiaoMi/soar/common"
+	"github.com/laojianzi/soar/common"
 )
 
 // SHOW TABLE STATUS Syntax
@@ -395,6 +395,7 @@ func (db *Connector) ShowColumns(tableName string) (*TableDesc, error) {
 		if err != nil {
 			common.Log.Debug(err.Error())
 		}
+
 		tbDesc.DescValues = append(tbDesc.DescValues, tc)
 	}
 	res.Rows.Close()
@@ -588,6 +589,7 @@ func (db *Connector) FindColumn(name, dbName string, tables ...string) ([]*commo
 				col.Collation = string(tbCollation)
 			}
 		}
+
 		columns = append(columns, &col)
 	}
 	res.Rows.Close()

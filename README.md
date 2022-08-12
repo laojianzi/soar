@@ -1,12 +1,12 @@
 # ![SOAR](https://raw.githubusercontent.com/XiaoMi/soar/master/doc/images/logo.png)
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/xiaomi-dba/soar)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://github.com/XiaoMi/soar/blob/master/LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/XiaoMi/soar)](https://goreportcard.com/report/github.com/XiaoMi/soar)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://github.com/laojianzi/soar/blob/main/LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/github.com/laojianzi/soar)](https://goreportcard.com/report/github.com/laojianzi/soar)
 [![Build Status](https://travis-ci.org/XiaoMi/soar.svg?branch=master)](https://travis-ci.org/XiaoMi/soar)
-[![GoDoc](https://godoc.org/github.com/XiaoMi/soar?status.svg)](https://godoc.org/github.com/XiaoMi/soar)
+[![GoDoc](https://godoc.org/github.com/laojianzi/soar?status.svg)](https://godoc.org/github.com/laojianzi/soar)
 
-[文档](http://github.com/XiaoMi/soar/tree/master/doc) | [FAQ](http://github.com/XiaoMi/soar/blob/master/doc/FAQ.md) | [变更记录](http://github.com/XiaoMi/soar/blob/master/CHANGES.md) | [路线图](http://github.com/XiaoMi/soar/blob/master/doc/roadmap.md) | [English](http://github.com/XiaoMi/soar/blob/master/README_EN.md)
+[文档](http://github.com/laojianzi/soar/tree/master/doc) | [FAQ](http://github.com/laojianzi/soar/blob/master/doc/FAQ.md) | [变更记录](http://github.com/laojianzi/soar/blob/master/CHANGES.md) | [路线图](http://github.com/laojianzi/soar/blob/master/doc/roadmap.md) | [English](http://github.com/laojianzi/soar/blob/master/README_EN.md)
 
 ## SOAR
 
@@ -25,12 +25,12 @@ SOAR(SQL Optimizer And Rewriter) 是一个对 SQL 进行优化和改写的自动
 
 ## 快速入门
 
-* [安装使用](http://github.com/XiaoMi/soar/blob/master/doc/install.md)
-* [体系架构](http://github.com/XiaoMi/soar/blob/master/doc/structure.md)
-* [配置文件](http://github.com/XiaoMi/soar/blob/master/doc/config.md)
-* [常用命令](http://github.com/XiaoMi/soar/blob/master/doc/cheatsheet.md)
-* [产品对比](http://github.com/XiaoMi/soar/blob/master/doc/comparison.md)
-* [路线图](http://github.com/XiaoMi/soar/blob/master/doc/roadmap.md)
+* [安装使用](http://github.com/laojianzi/soar/blob/master/doc/install.md)
+* [体系架构](http://github.com/laojianzi/soar/blob/master/doc/structure.md)
+* [配置文件](http://github.com/laojianzi/soar/blob/master/doc/config.md)
+* [常用命令](http://github.com/laojianzi/soar/blob/master/doc/cheatsheet.md)
+* [产品对比](http://github.com/laojianzi/soar/blob/master/doc/comparison.md)
+* [路线图](http://github.com/laojianzi/soar/blob/master/doc/roadmap.md)
 
 ## 交流与反馈
 
@@ -42,4 +42,4 @@ SOAR(SQL Optimizer And Rewriter) 是一个对 SQL 进行优化和改写的自动
 
 ## License
 
-[Apache License 2.0](https://github.com/XiaoMi/soar/blob/master/LICENSE).
+[Apache License 2.0](https://github.com/laojianzi/soar/blob/master/LICENSE).

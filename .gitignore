@@ -1,5 +1,6 @@
 bin/
 release/
+dist/
 test/tmp/
 doc/blueprint/
 *.iml

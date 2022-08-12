@@ -45,19 +45,24 @@ func GoldenDiff(f func(), name string, update *bool) error {
 	}
 
 	gp := filepath.Join("testdata", name+".golden")
+	got := bytes.ReplaceAll(b.Bytes(), []byte{'\r', '\n'}, []byte{'\n'})
 	if *update {
-		if err = ioutil.WriteFile(gp, b.Bytes(), 0644); err != nil {
+		if err = ioutil.WriteFile(gp, got, 0644); err != nil {
 			err = fmt.Errorf("%s failed to update golden file: %s", name, err)
 			return err
 		}
 	}
+
 	want, err := ioutil.ReadFile(gp)
 	if err != nil {
 		err = fmt.Errorf("%s failed reading .golden: %s", name, err)
 	}
-	if got := b.Bytes(); !bytes.Equal(got, want) {
-		err = fmt.Errorf("%s does not match .golden file\nwant: \n%s\ngot: \n%s", name, want, got)
+
+	want = bytes.ReplaceAll(want, []byte{'\r', '\n'}, []byte{'\n'})
+	if !bytes.Equal(got, want) {
+		err = fmt.Errorf("%s does not match .golden file\nwant: \n%q\ngot: \n%q", name, string(want), string(got))
 	}
+
 	return err
 }
 

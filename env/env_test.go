@@ -24,8 +24,8 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/XiaoMi/soar/common"
-	"github.com/XiaoMi/soar/database"
+	"github.com/laojianzi/soar/common"
+	"github.com/laojianzi/soar/database"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/kr/pretty"

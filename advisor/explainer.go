@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/XiaoMi/soar/common"
-	"github.com/XiaoMi/soar/database"
+	"github.com/laojianzi/soar/common"
+	"github.com/laojianzi/soar/database"
 )
 
 // [EXP.XXX]Rule

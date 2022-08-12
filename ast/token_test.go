@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/XiaoMi/soar/common"
+	"github.com/laojianzi/soar/common"
 
 	"github.com/kr/pretty"
 )
@@ -135,13 +135,13 @@ func TestSplitStatement(t *testing.T) {
 		;*/
 		from test;hello`), // 6
 		[]byte(`select * from test`), // 7
-		// https://github.com/XiaoMi/soar/issues/66
+		// https://github.com/laojianzi/soar/issues/66
 		[]byte(`/*comment*/`),  // 8
 		[]byte(`/*comment*/;`), // 9
 		[]byte(`--`),           // 10
 		[]byte(`-- comment`),   // 11
 		[]byte(`# comment`),    // 12
-		// https://github.com/XiaoMi/soar/issues/116
+		// https://github.com/laojianzi/soar/issues/116
 		[]byte(`select
 *
 -- comment
@@ -164,7 +164,7 @@ where col = 1`), // 16
 -- comment
 tb;
 select col from tb where col = 1;`), // 17
-		// https://github.com/XiaoMi/soar/issues/120
+		// https://github.com/laojianzi/soar/issues/120
 		[]byte(`
 -- comment
 select col from tb;

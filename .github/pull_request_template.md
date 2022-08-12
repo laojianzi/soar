@@ -1,5 +1,5 @@
 <!--
-Thank you for contributing to SOAR! Please read SOAR's [CONTRIBUTING](https://github.com/XiaoMi/soar/blob/master/CONTRIBUTING.md) document **BEFORE** filing this PR.
+Thank you for contributing to SOAR! Please read SOAR's [CONTRIBUTING](https://github.com/laojianzi/soar/blob/main/CONTRIBUTING.md) document **BEFORE** filing this PR.
 -->
 
 ### What problem does this PR solve? <!--add issue link with summary if exists-->

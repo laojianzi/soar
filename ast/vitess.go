@@ -19,7 +19,7 @@ package ast
 import (
 	"encoding/json"
 
-	"github.com/XiaoMi/soar/common"
+	"github.com/laojianzi/soar/common"
 
 	"github.com/kr/pretty"
 	"vitess.io/vitess/go/vt/sqlparser"

@@ -26,8 +26,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/XiaoMi/soar/ast"
-	"github.com/XiaoMi/soar/common"
+	"github.com/laojianzi/soar/ast"
+	"github.com/laojianzi/soar/common"
 
 	tidb "github.com/pingcap/parser/ast"
 	"github.com/tidwall/gjson"

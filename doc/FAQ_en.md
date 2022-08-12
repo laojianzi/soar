@@ -68,7 +68,7 @@ advisor/rules.go HeuristicRules add a new item
 advisor/heuristic.go add a new rule function
 advisor/heuristic_test.go add a new test function
 make doc
-go test github.com/XiaoMi/soar/advisor -v -update -run TestListHeuristicRules
-go test github.com/XiaoMi/soar/advisor -v -update -run TestMergeConflictHeuristicRules
+go test github.com/laojianzi/soar/advisor -v -update -run TestListHeuristicRules
+go test github.com/laojianzi/soar/advisor -v -update -run TestMergeConflictHeuristicRules
 make daily
 ```

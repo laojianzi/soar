@@ -1,0 +1,15 @@
+project_name: soar
+
+builds:
+  - id: soar
+    main: ./cmd/soar
+    binary: soar
+    gcflags:
+      - all=-trimpath={{.Env.GOPATH}}
+    ldflags:
+      - -s -w
+      - -X 'github.com/laojianzi/soar/common.Version={{.Env.VERSION_VERSION}}'
+      - -X 'github.com/laojianzi/soar/common.Compile={{.Env.VERSION_COMPILE}}'
+      - -X 'github.com/laojianzi/soar/common.Branch={{.Env.VERSION_BRANCH}}'
+      - -X 'github.com/laojianzi/soar/common.GitDirty={{.Env.VERSION_GIT_DIRTY}}'
+      - -X 'github.com/laojianzi/soar/common.DevPath={{.Env.VERSION_DEV_PATH}}'

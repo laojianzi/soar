@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/XiaoMi/soar/common"
+	"github.com/laojianzi/soar/common"
 )
 
 var update = flag.Bool("update", false, "update .golden files")

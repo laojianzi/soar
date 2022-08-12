@@ -21,7 +21,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/XiaoMi/soar/common"
+	"github.com/laojianzi/soar/common"
 
 	"github.com/percona/go-mysql/query"
 )

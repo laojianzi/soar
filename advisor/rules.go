@@ -24,8 +24,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/XiaoMi/soar/ast"
-	"github.com/XiaoMi/soar/common"
+	"github.com/laojianzi/soar/ast"
+	"github.com/laojianzi/soar/common"
 
 	"github.com/kr/pretty"
 	"github.com/percona/go-mysql/query"

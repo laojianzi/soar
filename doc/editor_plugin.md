@@ -2,7 +2,7 @@
 
 * 首先安装Syntastic，安装方法参见[官方文档](https://github.com/vim-syntastic/syntastic#installation)
 * 将`soar`二进制文件拷贝到可执行文件的查找路径($PATH)下，添加可执行权限`chmod a+x soar`
-* 将doc/example/[soar.vim](http://github.com/XiaoMi/soar/raw/master/doc/example/soar.vim)文件拷贝至${SyntasticInstalledPath}/syntax_checkers/sql目录下
+* 将doc/example/[soar.vim](http://github.com/laojianzi/soar/raw/master/doc/example/soar.vim)文件拷贝至${SyntasticInstalledPath}/syntax_checkers/sql目录下
 * 修改${SyntasticInstalledPath}/plugin/syntastic/registry.vim文件，增加sql文件的检查工具，`'sql':['soar', 'sqlint']`
 
 ### 插件演示
