@@ -1,5 +1,15 @@
 version = 1
 
+test_patterns = [
+  "**/*_test.go"
+]
+
+exclude_patterns = [
+  "bin/**",
+  "dist/**",
+  "*.log"
+]
+
 [[analyzers]]
 name = "docker"
 enabled = true
@@ -10,10 +20,6 @@ enabled = true
 
 [[analyzers]]
 name = "secrets"
-enabled = true
-
-[[analyzers]]
-name = "test-coverage"
 enabled = true
 
 [[analyzers]]
