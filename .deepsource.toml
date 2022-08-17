@@ -17,10 +17,6 @@ name = "test-coverage"
 enabled = true
 
 [[analyzers]]
-name = "gofmt"
-enabled = true
-
-[[analyzers]]
 name = "go"
 enabled = true
 
