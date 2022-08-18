@@ -29,7 +29,7 @@ import (
 	"github.com/laojianzi/soar/ast"
 	"github.com/laojianzi/soar/common"
 
-	tidb "github.com/pingcap/parser/ast"
+	tidb "github.com/pingcap/tidb/parser/ast"
 	"github.com/tidwall/gjson"
 	"vitess.io/vitess/go/vt/sqlparser"
 )

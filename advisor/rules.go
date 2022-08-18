@@ -29,7 +29,7 @@ import (
 
 	"github.com/kr/pretty"
 	"github.com/percona/go-mysql/query"
-	tidb "github.com/pingcap/parser/ast"
+	tidb "github.com/pingcap/tidb/parser/ast"
 	"vitess.io/vitess/go/vt/sqlparser"
 )
 
@@ -306,7 +306,7 @@ func InitHeuristicRules() {
 			Severity: "L3",
 			Summary:  "不建议使用 ORDER BY RAND()",
 			Content:  `ORDER BY RAND() 是从结果集中检索随机行的一种非常低效的方法，因为它会对整个结果进行排序并丢弃其大部分数据。`,
-			Case:     "SELECT name FROM tbl WHERE id < 1000 ORDER BY rand(number)",
+			Case:     "SELECT name FROM tbl WHERE id < 1000 ORDER BY RAND(number)",
 			Func:     (*Query4Audit).RuleOrderByRand,
 		},
 		"CLA.003": {
@@ -314,7 +314,7 @@ func InitHeuristicRules() {
 			Severity: "L2",
 			Summary:  "不建议使用带 OFFSET 的LIMIT 查询",
 			Content:  `使用 LIMIT 和 OFFSET 对结果集分页的复杂度是 O(n^2)，并且会随着数据增大而导致性能问题。采用“书签”扫描的方法实现分页效率更高。`,
-			Case:     "SELECT c1,c2 FROM tbl WHERE name=xx ORDER BY number limit 1 OFFSET 20",
+			Case:     "SELECT c1,c2 FROM tbl WHERE name=xx ORDER BY number LIMIT 1 OFFSET 20",
 			Func:     (*Query4Audit).RuleOffsetLimit,
 		},
 		"CLA.004": {
@@ -378,7 +378,7 @@ func InitHeuristicRules() {
 			Severity: "L1",
 			Summary:  "建议为表添加注释",
 			Content:  `为表添加注释能够使得表的意义更明确，从而为日后的维护带来极大的便利。`,
-			Case:     "CREATE TABLE `test1` (`ID` bigint(20) NOT NULL AUTO_INCREMENT,`c1` VARCHAR(128) DEFAULT NULL,PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8",
+			Case:     "CREATE TABLE `test1` (`ID` BIGINT(20) NOT NULL AUTO_INCREMENT,`c1` VARCHAR(128) DEFAULT NULL,PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8",
 			Func:     (*Query4Audit).RuleTblCommentCheck,
 		},
 		"CLA.012": {
@@ -538,7 +538,7 @@ func InitHeuristicRules() {
 			Severity: "L5",
 			Summary:  "TEXT、BLOB 和 JSON 类型的字段不建议设置为 NOT NULL",
 			Content:  `TEXT、BLOB 和 JSON 类型的字段无法指定非 NULL 的默认值，如果添加了 NOT NULL 限制，写入数据时又未对该字段指定值可能导致写入失败。`,
-			Case:     "CREATE TABLE `tb`(`c` longblob NOT NULL);",
+			Case:     "CREATE TABLE `tb`(`c` LONGBLOB NOT NULL);",
 			Func:     (*Query4Audit).RuleBLOBNotNull,
 		},
 		"COL.013": {
@@ -546,7 +546,7 @@ func InitHeuristicRules() {
 			Severity: "L4",
 			Summary:  "TIMESTAMP 类型默认值检查异常",
 			Content:  `TIMESTAMP 类型建议设置默认值，且不建议使用 0 或 0000-00-00 00:00:00 作为默认值。可以考虑使用 1970-08-02 01:01:01`,
-			Case:     "CREATE TABLE tbl( `id` bigint NOT NULL, `create_time` TIMESTAMP);",
+			Case:     "CREATE TABLE tbl( `id` BIGINT NOT NULL, `create_time` TIMESTAMP);",
 			Func:     (*Query4Audit).RuleTimestampDefault,
 		},
 		"COL.014": {
@@ -563,7 +563,7 @@ func InitHeuristicRules() {
 			Severity: "L4",
 			Summary:  "TEXT、BLOB 和 JSON 类型的字段不可指定非 NULL 的默认值",
 			Content:  `MySQL 数据库中 TEXT、BLOB 和 JSON 类型的字段不可指定非 NULL 的默认值。TEXT最大长度为2^16-1个字符，MEDIUMTEXT最大长度为2^32-1个字符，LONGTEXT最大长度为2^64-1个字符。`,
-			Case:     "CREATE TABLE `tbl` (`c` blob DEFAULT NULL);",
+			Case:     "CREATE TABLE `tbl` (`c` BLOB DEFAULT NULL);",
 			Func:     (*Query4Audit).RuleBlobDefaultValue,
 		},
 		"COL.016": {
@@ -847,7 +847,7 @@ func InitHeuristicRules() {
 			Severity: "L0",
 			Summary:  "全文索引不是银弹",
 			Content:  `全文索引主要用于解决模糊查询的性能问题，但需要控制好查询的频率和并发度。同时注意调整 ft_min_word_len, ft_max_word_len, ngram_token_size 等参数。`,
-			Case:     "CREATE TABLE `tb` ( `id` INT(10) unsigned NOT NULL AUTO_INCREMENT, `ip` VARCHAR(255) NOT NULL DEFAULT '', PRIMARY KEY (`id`), FULLTEXT KEY `ip` (`ip`) ) ENGINE=InnoDB;",
+			Case:     "CREATE TABLE `tb` ( `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, `ip` VARCHAR(255) NOT NULL DEFAULT '', PRIMARY KEY (`id`), FULLTEXT KEY `ip` (`ip`) ) ENGINE=InnoDB;",
 			Func:     (*Query4Audit).RuleFulltextIndex,
 		},
 		"KWR.001": {
@@ -951,7 +951,7 @@ func InitHeuristicRules() {
 			Severity: "L4",
 			Summary:  "未使用 ORDER BY 的 LIMIT 查询",
 			Content:  `没有 ORDER BY 的 LIMIT 会导致非确定性的结果，这取决于查询执行计划。`,
-			Case:     "SELECT col1,col2 FROM tbl WHERE name=xx limit 10",
+			Case:     "SELECT col1,col2 FROM tbl WHERE name=xx LIMIT 10",
 			Func:     (*Query4Audit).RuleNoDeterministicLimit,
 		},
 		"RES.003": {
@@ -1203,7 +1203,7 @@ func InitHeuristicRules() {
 			Severity: "L1",
 			Summary:  "不建议使用临时表",
 			Content:  `不建议使用临时表`,
-			Case:     "CREATE TEMPORARY TABLE `work` (`time` time DEFAULT NULL) ENGINE=InnoDB;",
+			Case:     "CREATE TEMPORARY TABLE `work` (`time` TIME DEFAULT NULL) ENGINE=InnoDB;",
 			Func:     (*Query4Audit).RuleForbiddenTempTable,
 		},
 		"TBL.008": {

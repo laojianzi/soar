@@ -31,9 +31,9 @@ import (
 
 	"github.com/gedex/inflector"
 	"github.com/percona/go-mysql/query"
-	tidb "github.com/pingcap/parser/ast"
-	"github.com/pingcap/parser/format"
-	"github.com/pingcap/parser/mysql"
+	tidb "github.com/pingcap/tidb/parser/ast"
+	"github.com/pingcap/tidb/parser/format"
+	"github.com/pingcap/tidb/parser/mysql"
 	"github.com/tidwall/gjson"
 	"vitess.io/vitess/go/vt/sqlparser"
 )

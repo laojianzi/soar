@@ -20,10 +20,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/pingcap/parser/ast"
 	"reflect"
 	"regexp"
 	"strings"
+
+	"github.com/pingcap/tidb/parser/ast"
 
 	"github.com/laojianzi/soar/common"
 
@@ -49,56 +50,56 @@ func init() {
 			Name:        "dml2select",
 			Description: "将数据库更新请求转换为只读查询请求，便于执行EXPLAIN",
 			Original:    "DELETE FROM film WHERE length > 100",
-			Suggest:     "select * from film where length > 100",
+			Suggest:     "SELECT * FROM film WHERE length > 100",
 			Func:        (*Rewrite).RewriteDML2Select,
 		},
 		{
 			Name:        "reg2select",
 			Description: "使用正则的方式将数据库更新请求转换为只读查询请求，便于执行EXPLAIN",
 			Original:    "DELETE FROM film WHERE length > 100",
-			Suggest:     "select * from film where length > 100",
+			Suggest:     "SELECT * FROM film WHERE length > 100",
 			Func:        (*Rewrite).RewriteReg2Select,
 		},
 		{
 			Name:        "star2columns",
 			Description: "为SELECT *补全表的列信息",
 			Original:    "SELECT * FROM film",
-			Suggest:     "select film.film_id, film.title from film",
+			Suggest:     "SELECT film.film_id, film.title FROM film",
 			Func:        (*Rewrite).RewriteStar2Columns,
 		},
 		{
 			Name:        "insertcolumns",
 			Description: "为INSERT补全表的列信息",
-			Original:    "insert into film values(1,2,3,4,5)",
-			Suggest:     "insert into film(film_id, title, description, release_year, language_id) values (1, 2, 3, 4, 5)",
+			Original:    "INSERT INTO film VALUES(1,2,3,4,5)",
+			Suggest:     "INSERT INTO film(film_id, title, description, release_year, language_id) VALUES (1, 2, 3, 4, 5)",
 			Func:        (*Rewrite).RewriteInsertColumns,
 		},
 		{
 			Name:        "having",
 			Description: "将查询的 HAVING 子句改写为 WHERE 中的查询条件",
 			Original:    "SELECT state, COUNT(*) FROM Drivers GROUP BY state HAVING state IN ('GA', 'TX') ORDER BY state",
-			Suggest:     "select state, COUNT(*) from Drivers where state in ('GA', 'TX') group by state order by state asc",
+			Suggest:     "SELECT state, COUNT(*) FROM Drivers WHERE state IN ('GA', 'TX') GROUP BY state ORDER BY state ASC",
 			Func:        (*Rewrite).RewriteHaving,
 		},
 		{
 			Name:        "orderbynull",
 			Description: "如果 GROUP BY 语句不指定 ORDER BY 条件会导致无谓的排序产生，如果不需要排序建议添加 ORDER BY NULL",
-			Original:    "SELECT sum(col1) FROM tbl GROUP BY col",
-			Suggest:     "select sum(col1) from tbl group by col order by null",
+			Original:    "SELECT SUM(col1) FROM tbl GROUP BY col",
+			Suggest:     "SELECT SUM(col1) FROM tbl GROUP BY col ORDER BY NULL",
 			Func:        (*Rewrite).RewriteAddOrderByNull,
 		},
 		{
 			Name:        "unionall",
 			Description: "可以接受重复的时间，使用 UNION ALL 替代 UNION 以提高查询效率",
-			Original:    "select country_id from city union select country_id from country",
-			Suggest:     "select country_id from city union all select country_id from country",
+			Original:    "SELECT country_id FROM city UNION SELECT country_id FROM country",
+			Suggest:     "SELECT country_id FROM city UNION ALL SELECT country_id FROM country",
 			Func:        (*Rewrite).RewriteUnionAll,
 		},
 		{
 			Name:        "or2in",
 			Description: "将同一列不同条件的 OR 查询转写为 IN 查询",
-			Original:    "select country_id from city where col1 = 1 or (col2 = 1 or col2 = 2 ) or col1 = 3;",
-			Suggest:     "select country_id from city where (col2 in (1, 2)) or col1 in (1, 3);",
+			Original:    "SELECT country_id FROM city WHERE col1 = 1 OR (col2 = 1 OR col2 = 2 ) OR col1 = 3;",
+			Suggest:     "SELECT country_id FROM city WHERE (col2 IN (1, 2)) OR col1 IN (1, 3);",
 			Func:        (*Rewrite).RewriteOr2In,
 		},
 		{
@@ -120,7 +121,7 @@ func init() {
 			Name:        "dmlorderby",
 			Description: "删除 DML 更新操作中无意义的 ORDER BY",
 			Original:    "DELETE FROM tbl WHERE col1=1 ORDER BY col",
-			Suggest:     "delete from tbl where col1 = 1",
+			Suggest:     "DELETE FROM tbl WHERE col1 = 1",
 			Func:        (*Rewrite).RewriteRemoveDMLOrderBy,
 		},
 		/*
@@ -156,8 +157,8 @@ func init() {
 		{
 			Name:        "standard",
 			Description: "SQL标准化，如：关键字转换为小写",
-			Original:    "SELECT sum(col1) FROM tbl GROUP BY 1;",
-			Suggest:     "select sum(col1) from tbl group by 1",
+			Original:    "SELECT SUM(col1) FROM tbl GROUP BY 1;",
+			Suggest:     "SELECT SUM(col1) FROM tbl GROUP BY 1",
 			Func:        (*Rewrite).RewriteStandard,
 		},
 		{
@@ -169,50 +170,50 @@ func init() {
 		{
 			Name:        "alwaystrue",
 			Description: "删除无用的恒真判断条件",
-			Original:    "SELECT count(col) FROM tbl where 'a'= 'a' or ('b' = 'b' and a = 'b');",
-			Suggest:     "select count(col) from tbl where (a = 'b');",
+			Original:    "SELECT COUNT(col) FROM tbl WHERE 'a'= 'a' OR ('b' = 'b' AND a = 'b');",
+			Suggest:     "SELECT COUNT(col) FROM tbl WHERE (a = 'b');",
 			Func:        (*Rewrite).RewriteAlwaysTrue,
 		},
 		{
 			Name:        "countstar",
 			Description: "不建议使用COUNT(col)或COUNT(常量)，建议改写为COUNT(*)",
-			Original:    "SELECT count(col) FROM tbl GROUP BY 1;",
-			Suggest:     "SELECT count(*) FROM tbl GROUP BY 1;",
+			Original:    "SELECT COUNT(col) FROM tbl GROUP BY 1;",
+			Suggest:     "SELECT COUNT(*) FROM tbl GROUP BY 1;",
 			Func:        (*Rewrite).RewriteCountStar,
 		},
 		{
 			Name:        "innodb",
 			Description: "建表时建议使用InnoDB引擎，非 InnoDB 引擎表自动转 InnoDB",
-			Original:    "CREATE TABLE t1(id bigint(20) NOT NULL AUTO_INCREMENT);",
-			Suggest:     "create table t1 (\n\tid bigint(20) not null auto_increment\n) ENGINE=InnoDB;",
+			Original:    "CREATE TABLE t1(id BIGINT(20) NOT NULL AUTO_INCREMENT);",
+			Suggest:     "CREATE TABLE t1 (\n\tid BIGINT(20) NOT NULL AUTO_INCREMENT\n) ENGINE=InnoDB;",
 			Func:        (*Rewrite).RewriteInnoDB,
 		},
 		{
 			Name:        "autoincrement",
 			Description: "将autoincrement初始化为1",
-			Original:    "CREATE TABLE t1(id bigint(20) NOT NULL AUTO_INCREMENT) ENGINE=InnoDB AUTO_INCREMENT=123802;",
-			Suggest:     "create table t1(id bigint(20) not null auto_increment) ENGINE=InnoDB auto_increment=1;",
+			Original:    "CREATE TABLE t1(id BIGINT(20) NOT NULL AUTO_INCREMENT) ENGINE=InnoDB AUTO_INCREMENT=123802;",
+			Suggest:     "CREATE TABLE t1(id BIGINT(20) NOT NULL AUTO_INCREMENT) ENGINE=InnoDB AUTO_INCREMENT=1;",
 			Func:        (*Rewrite).RewriteAutoIncrement,
 		},
 		{
 			Name:        "intwidth",
 			Description: "整型数据类型修改默认显示宽度",
-			Original:    "create table t1 (id int(20) not null auto_increment) ENGINE=InnoDB;",
-			Suggest:     "create table t1 (id int(10) not null auto_increment) ENGINE=InnoDB;",
+			Original:    "CREATE TABLE t1 (id INT(20) NOT NULL AUTO_INCREMENT) ENGINE=InnoDB;",
+			Suggest:     "CREATE TABLE t1 (id INT(10) NOT NULL AUTO_INCREMENT) ENGINE=InnoDB;",
 			Func:        (*Rewrite).RewriteIntWidth,
 		},
 		{
 			Name:        "truncate",
 			Description: "不带 WHERE 条件的 DELETE 操作建议修改为 TRUNCATE",
 			Original:    "DELETE FROM tbl",
-			Suggest:     "truncate table tbl",
+			Suggest:     "TRUNCATE TABLE tbl",
 			Func:        (*Rewrite).RewriteTruncate,
 		},
 		{
 			Name:        "rmparenthesis",
 			Description: "去除没有意义的括号",
-			Original:    "select col from table where (col = 1);",
-			Suggest:     "select col from table where col = 1;",
+			Original:    "SELECT col FROM table WHERE (col = 1);",
+			Suggest:     "SELECT col FROM table WHERE col = 1;",
 			Func:        (*Rewrite).RewriteRmParenthesis,
 		},
 		// delimiter要放在最后，不然补不上
@@ -1598,7 +1599,7 @@ func (rw *Rewrite) RewriteTruncate() *Rewrite {
 		if len(meta) == 1 && n.Where == nil {
 			for _, db := range meta {
 				for _, tbl := range db.Table {
-					rw.NewSQL = "truncate table " + tbl.TableName
+					rw.NewSQL = "TRUNCATE TABLE " + tbl.TableName
 				}
 			}
 		}
@@ -1663,7 +1664,7 @@ func regDelete2Select(sql string) string {
 	sqlRegexp := regexp.MustCompile(`^(?i)delete\s+from\s+(.*)$`)
 	params := sqlRegexp.FindStringSubmatch(sql)
 	if len(params) > 1 {
-		return fmt.Sprintf(`select * from %s`, params[1])
+		return fmt.Sprintf(`SELECT * FROM %s`, params[1])
 	}
 	return sql
 }
@@ -1688,7 +1689,7 @@ func regUpdate2Select(sql string) string {
 	sqlRegexp := regexp.MustCompile(`^(?i)update\s+(.*)\s+set\s+(.*)\s+(where\s+.*)$`)
 	params := sqlRegexp.FindStringSubmatch(sql)
 	if len(params) > 2 {
-		return fmt.Sprintf(`select * from %s %s`, params[1], params[3])
+		return fmt.Sprintf(`SELECT * FROM %s %s`, params[1], params[3])
 	}
 	return sql
 }
@@ -1701,7 +1702,7 @@ func insert2Select(stmt *sqlparser.Insert) string {
 		return sqlparser.String(row)
 	}
 
-	return "select 1 from DUAL"
+	return "SELECT 1 FROM DUAL"
 }
 
 // AlterAffectTable 获取ALTER影响的库表名，返回：`db`.`table`

@@ -25,8 +25,8 @@ import (
 
 	json "github.com/CorgiMan/json2"
 	"github.com/kr/pretty"
-	"github.com/pingcap/parser"
-	"github.com/pingcap/parser/ast"
+	"github.com/pingcap/tidb/parser"
+	"github.com/pingcap/tidb/parser/ast"
 	"github.com/tidwall/gjson"
 
 	// for pingcap parser
