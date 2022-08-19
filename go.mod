@@ -20,14 +20,12 @@ require (
 )
 
 require (
-	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/gorilla/handlers v1.5.1 // indirect
-	github.com/gorilla/mux v1.8.0 // indirect
-	github.com/montanaflynn/stats v0.6.3 // indirect
-	github.com/pingcap/tipb v0.0.0-20210601083426-79a378b6d1c4 // indirect
-	github.com/sirupsen/logrus v1.8.1 // indirect
-	github.com/spf13/cobra v1.1.1 // indirect
-	go.uber.org/zap v1.17.0 // indirect
-	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
-	golang.org/x/sys v0.0.0-20210601080250-7ecdf8ef093b // indirect
+	github.com/form3tech-oss/jwt-go v3.2.5+incompatible // indirect
+	golang.org/x/sys v0.0.0-20220818161305-2296e01440c6 // indirect
+)
+
+replace (
+	// fix potential security issue(CVE-2020-26160) introduced by indirect dependency.
+	github.com/dgrijalva/jwt-go => github.com/form3tech-oss/jwt-go v3.2.6-0.20210809144907-32ab6a8243d7+incompatible
+	github.com/gorilla/websocket v1.4.0 => github.com/gorilla/websocket v1.4.1
 )
