@@ -100,7 +100,7 @@ func (db *Connector) SamplingData(onlineConn *Connector, tables ...string) error
 
 // startSampling sampling data from OnlineDSN to TestDSN
 func (db *Connector) startSampling(onlineConn *sql.DB, database, table string, where string) error {
-	samplingQuery := fmt.Sprintf("select * from `%s`.`%s` %s",
+	samplingQuery := fmt.Sprintf("SELECT * FROM `%s`.`%s` %s",
 		Escape(database, false),
 		Escape(table, false),
 		Escape(where, false))
@@ -167,12 +167,15 @@ func (db *Connector) startSampling(onlineConn *sql.DB, database, table string, w
 			valuesCount = 0
 		}
 	}
+
+	common.LogIfError(res.Err(), "")
 	if len(valuesStr) > 0 {
 		err = db.doSampling(table, columnsStr, strings.Join(valuesStr, `,`))
 		if err != nil {
 			common.LogIfWarn(err, "")
 		}
 	}
+
 	res.Close()
 	return err
 }
@@ -180,7 +183,7 @@ func (db *Connector) startSampling(onlineConn *sql.DB, database, table string, w
 // 将泵取的数据转换成 insert 语句并在 testConn 数据库中执行
 func (db *Connector) doSampling(table, colDef, values string) error {
 	// db.Database is hashed database name
-	query := fmt.Sprintf("insert into `%s`.`%s` (%s) values %s;",
+	query := fmt.Sprintf("INSERT INTO `%s`.`%s` (%s) VALUES %s;",
 		Escape(db.Database, false),
 		Escape(table, false),
 		Escape(colDef, false), values)

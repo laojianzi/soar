@@ -108,7 +108,7 @@ func Test_Main_initQuery(t *testing.T) {
 	common.Log.Debug("Exiting function: %s", common.GetFunctionName())
 }
 
-func Test_Main_reportTool(t *testing.T) {
+func Test_Main_reportTool(_ *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	orgRerportType := common.Config.ReportType
 	types := []string{"html", "md2html", "explain-digest", "chardet", "remove-comment"}
@@ -120,7 +120,7 @@ func Test_Main_reportTool(t *testing.T) {
 	common.Log.Debug("Exiting function: %s", common.GetFunctionName())
 }
 
-func Test_Main_helpTools(t *testing.T) {
+func Test_Main_helpTools(_ *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 
 	orgConfig := common.CheckConfig

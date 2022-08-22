@@ -19,8 +19,9 @@ package ast
 import (
 	"errors"
 
-	"github.com/laojianzi/soar/common"
 	"vitess.io/vitess/go/vt/sqlparser"
+
+	"github.com/laojianzi/soar/common"
 )
 
 // 该文件用于构造一个存储AST生成节点的链表

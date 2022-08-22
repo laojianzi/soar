@@ -1,0 +1,62 @@
+linters-settings:
+  nakedret:
+    max-func-lines: 0 # Disallow any unnamed return statement
+  goimports:
+    local-prefixes: github.com/laojianzi/soar
+  nolintlint:
+    allow-unused: false # report any unused nolint directives
+    require-explanation: false # don't require an explanation for nolint directives
+    require-specific: false # don't require nolint directives to be specific about which linter is being skipped
+
+linters:
+  disable-all: true
+  enable:
+    - deadcode
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - structcheck
+    - typecheck
+    - unused
+    - varcheck
+    - nakedret
+    - gofmt
+    - rowserrcheck
+    - unconvert
+    - goimports
+    - unparam
+    - nolintlint
+
+  # don't enable:
+  # - asciicheck
+  # - scopelint
+  # - gochecknoglobals
+  # - gocognit
+  # - godot
+  # - godox
+  # - goerr113
+  # - interfacer
+  # - maligned
+  # - nestif
+  # - prealloc
+  # - testpackage
+  # - revive
+  # - wsl
+
+issues:
+  exclude-rules:
+    - path: cmd/soar/tool.go
+      text: "`reportTool` - result `exitCode` is always `0`"
+
+run:
+  timeout: 30m
+  skip-dirs:
+    - (^|/).github($|/)
+    - (^|/).idea($|/)
+    - (^|/)bin($|/)
+    - (^|/)dist($|/)
+    - (^|/)doc($|/)
+    - (^|/)etc($|/)
+    - (^|/)test($|/)

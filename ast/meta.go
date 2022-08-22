@@ -20,8 +20,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/laojianzi/soar/common"
 	"vitess.io/vitess/go/vt/sqlparser"
+
+	"github.com/laojianzi/soar/common"
 )
 
 // GetTableFromExprs 从sqlparser.Exprs中获取所有的库表
@@ -125,15 +126,15 @@ func GetMeta(stmt sqlparser.Statement, meta common.Meta) common.Meta {
 // @tb 为 sqlparser.TableName 对象
 // @as 为该表的别名，无别名时为空
 // @meta 为信息集合
-func appendTable(tb sqlparser.TableName, as string, meta map[string]*common.DB) map[string]*common.DB {
+func appendTable(tb sqlparser.TableName, as string, meta map[string]*common.DB) {
 	if meta == nil {
-		return meta
+		return
 	}
 
 	dbName := tb.Qualifier.String()
 	tbName := tb.Name.String()
 	if tbName == "" {
-		return meta
+		return
 	}
 
 	if meta[dbName] == nil {
@@ -142,8 +143,6 @@ func appendTable(tb sqlparser.TableName, as string, meta map[string]*common.DB) 
 
 	meta[dbName].Table[tbName] = common.NewTable(tbName)
 	mergeAlias(dbName, tbName, as, meta)
-
-	return meta
 }
 
 // mergeAlias 将所有的表别名归并到一个表下
