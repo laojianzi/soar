@@ -21,11 +21,11 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/laojianzi/soar/common"
-
 	"github.com/kr/pretty"
-	"github.com/laojianzi/soar/env"
 	"vitess.io/vitess/go/vt/sqlparser"
+
+	"github.com/laojianzi/soar/common"
+	"github.com/laojianzi/soar/env"
 )
 
 // ALI.001
@@ -33,8 +33,8 @@ func TestRuleImplicitAlias(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"select col c from tbl where id < 1000",
-			"select col from tbl tb where id < 1000",
+			"SELECT col c FROM tbl WHERE id < 1000",
+			"SELECT col FROM tbl tb WHERE id < 1000",
 		},
 		{
 			"select 1",
@@ -62,7 +62,7 @@ func TestRuleStarAlias(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"select tbl.* AS c1,c2,c3 from tbl where id < 1000",
+			"SELECT tbl.* AS c1,c2,c3 FROM tbl WHERE id < 1000",
 			"SELECT * as",
 		},
 		{
@@ -91,8 +91,8 @@ func TestRuleStarAlias(t *testing.T) {
 func TestRuleSameAlias(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"select col as col from tbl where id < 1000",
-		"select col from tbl as tbl where id < 1000",
+		"SELECT col AS col FROM tbl WHERE id < 1000",
+		"SELECT col FROM tbl AS tbl WHERE id < 1000",
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -112,8 +112,8 @@ func TestRuleSameAlias(t *testing.T) {
 func TestRulePrefixLike(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"select col from tbl where id like '%abc'",
-		"select col from tbl where id like '_abc'",
+		"SELECT col FROM tbl WHERE id LIKE '%abc'",
+		"SELECT col FROM tbl WHERE id LIKE '_abc'",
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -134,12 +134,12 @@ func TestRuleEqualLike(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"select col from tbl where id like 'abc'",
-			"select col from tbl where id like 1",
+			"SELECT col FROM tbl WHERE id LIKE 'abc'",
+			"SELECT col FROM tbl WHERE id LIKE 1",
 		},
 		{
-			"select col from tbl where id like 'abc%'",
-			"select col from tbl where id like '%abc'",
+			"SELECT col FROM tbl WHERE id LIKE 'abc%'",
+			"SELECT col FROM tbl WHERE id LIKE '%abc'",
 			"select col from tbl where id like 'a%c'", // issue #273
 		},
 	}
@@ -202,10 +202,10 @@ func TestTimeFormatError(t *testing.T) {
 func TestRuleNoWhere(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
-		{"select col from tbl",
-			"delete from tbl",
+		{"SELECT col FROM tbl",
+			"DELETE FROM tbl",
 			"update tbl set col=1",
-			"insert into city (country_id) select country_id from country",
+			"INSERT INTO city (country_id) SELECT country_id FROM country",
 		},
 		{
 			`select 1;`,
@@ -240,7 +240,7 @@ func TestRuleNoWhere(t *testing.T) {
 func TestRuleOrderByRand(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"select col from tbl where id = 1 order by rand()",
+		"SELECT col FROM tbl WHERE id = 1 ORDER BY RAND()",
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -260,7 +260,7 @@ func TestRuleOrderByRand(t *testing.T) {
 func TestRuleOffsetLimit(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"select c1,c2 from tbl where name=xx order by number limit 1 offset 2000",
+		"SELECT c1,c2 FROM tbl WHERE name=xx ORDER BY number LIMIT 1 OFFSET 2000",
 		"select c1,c2 from tbl where name=xx order by number limit 2000,1",
 	}
 	for _, sql := range sqls {
@@ -282,7 +282,7 @@ func TestRuleGroupByConst(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
 		"select col1,col2 from tbl where col1='abc' group by 1",
-		"select col1,col2 from tbl group by 1",
+		"SELECT col1,col2 FROM tbl GROUP BY 1",
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -303,7 +303,7 @@ func TestRuleOrderByConst(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
 		// "select id from test where id=1 order by id",
-		"select id from test where id=1 order by 1",
+		"SELECT id FROM test WHERE id=1 ORDER BY 1",
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -323,8 +323,8 @@ func TestRuleOrderByConst(t *testing.T) {
 func TestRuleDiffGroupByOrderBy(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"select tb1.col, tb2.col from tb1, tb2 where id=1 group by tb1.col, tb2.col",
-		"select tb1.col, tb2.col from tb1, tb2 where id=1 order by tb1.col, tb2.col",
+		"SELECT tb1.col, tb2.col FROM tb1, tb2 WHERE id=1 GROUP BY tb1.col, tb2.col",
+		"SELECT tb1.col, tb2.col FROM tb1, tb2 WHERE id=1 ORDER BY tb1.col, tb2.col",
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -344,7 +344,7 @@ func TestRuleDiffGroupByOrderBy(t *testing.T) {
 func TestRuleMixOrderBy(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"select c1,c2,c3 from t1 where c1='foo' order by c2 desc, c3 asc",
+		"SELECT c1,c2,c3 FROM t1 WHERE c1='foo' ORDER BY c2 DESC, c3 ASC",
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -385,16 +385,16 @@ func TestRuleOrderByExpr(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"SELECT col FROM tbl order by cola - cl;",                // order by 列运算
-			"SELECT cola - cl col FROM tbl order by col;",            // 别名为列运算
+			"SELECT col FROM tbl ORDER BY cola - cl;",                // order by 列运算
+			"SELECT cola - cl col FROM tbl ORDER BY col;",            // 别名为列运算
 			"SELECT cola FROM tbl order by from_unixtime(col);",      // order by 函数运算
-			"SELECT from_unixtime(col) cola FROM tbl order by cola;", // 别名为函数运算
+			"SELECT FROM_UNIXTIME(col) cola FROM tbl ORDER BY cola;", // 别名为函数运算
 		},
 		{
 			`SELECT tbl.col FROM tbl ORDER BY col`,
-			"SELECT sum(col) AS col FROM tbl ORDER BY dt",
+			"SELECT SUM(col) AS col FROM tbl ORDER BY dt",
 			"SELECT tbl.col FROM tb, tbl WHERE tbl.tag_id = tb.id ORDER BY tbl.col",
-			"SELECT col FROM tbl order by `timestamp`;",           // 列名为关键字
+			"SELECT col FROM tbl ORDER BY `timestamp`;",           // 列名为关键字
 			"select col from tb where cl = 1 order by APPLY_TIME", // issue #104 case sensitive
 		},
 	}
@@ -429,8 +429,8 @@ func TestRuleGroupByExpr(t *testing.T) {
 	sqls := []string{
 		"SELECT col FROM tbl GROUP by cola - col;",
 		"SELECT cola - col col FROM tbl GROUP by col;",
-		"SELECT cola FROM tbl GROUP by from_unixtime(col);",
-		"SELECT from_unixtime(col) cola FROM tbl GROUP by cola;",
+		"SELECT cola FROM tbl GROUP BY FROM_UNIXTIME(col);",
+		"SELECT FROM_UNIXTIME(col) cola FROM tbl GROUP BY cola;",
 
 		// 反面例子
 		// `SELECT tbl.col FROM tbl GROUP BY col`,
@@ -456,7 +456,7 @@ func TestRuleGroupByExpr(t *testing.T) {
 func TestRuleTblCommentCheck(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"CREATE TABLE `test1`( `ID` bigint(20) NOT NULL AUTO_INCREMENT," +
+		"CREATE TABLE `test1`( `ID` BIGINT(20) NOT NULL AUTO_INCREMENT," +
 			" `c1` varchar(128) DEFAULT NULL, `c2` varchar(300) DEFAULT NULL," +
 			" `c3` varchar(32) DEFAULT NULL, `c4` int(11) NOT NULL, `c5` double NOT NULL," +
 			" `c6` text NOT NULL, PRIMARY KEY (`ID`), KEY `idx_c3_c2_c4_c5_c6` " +
@@ -481,8 +481,8 @@ func TestRuleTblCommentCheck(t *testing.T) {
 func TestRuleSelectStar(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"select * from tbl where id=1",
-		"select col, * from tbl where id=1",
+		"SELECT * FROM tbl WHERE id=1",
+		"SELECT col, * FROM tbl WHERE id=1",
 		// 反面例子
 		// "select count(*) from film where id=1",
 		// `select count(* ) from film where id=1`,
@@ -545,15 +545,15 @@ func TestRuleAddDefaultValue(t *testing.T) {
 	sqls := [][]string{
 		{
 			"create table test(id int)",
-			`ALTER TABLE test change id id varchar(10);`,
-			`ALTER TABLE test modify id varchar(10);`,
+			`ALTER TABLE test CHANGE id id VARCHAR(10);`,
+			`ALTER TABLE test MODIFY id VARCHAR(10);`,
 		},
 		{
 			`ALTER TABLE test modify id varchar(10) DEFAULT '';`,
-			`ALTER TABLE test CHANGE id id varchar(10) DEFAULT '';`,
-			"create table test(id int not null default 0 comment '用户id')",
-			`create table tb (a text)`,
-			`alter table tb add a text`,
+			`ALTER TABLE test CHANGE id id VARCHAR(10) DEFAULT '';`,
+			"CREATE TABLE test(id INT NOT NULL DEFAULT 0 COMMENT '用户id')",
+			`CREATE TABLE tb (a TEXT)`,
+			`ALTER TABLE tb ADD a TEXT`,
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -629,7 +629,7 @@ func TestRuleIPString(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"insert into tbl (IP,name) values('10.20.306.122','test')",
+			"INSERT INTO tbl (IP,name) VALUES('10.20.306.122','test')",
 		},
 		{
 			`CREATE USER IF NOT EXISTS 'test'@'1.1.1.1';`,
@@ -669,14 +669,14 @@ func TestRuleDataNotQuote(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"select col1,col2 from tbl where time < 2018-01-10",
-			"select col1,col2 from tbl where time < 18-01-10",
+			"SELECT col1,col2 FROM tbl WHERE time < 2018-01-10",
+			"SELECT col1,col2 FROM tbl WHERE time < 18-01-10",
 			"INSERT INTO tb1 SELECT * FROM tb2 WHERE time < 2020-01-10",
 		},
 		{
-			"select col1,col2 from tbl where time < '2018-01-10'",
+			"SELECT col1,col2 FROM tbl WHERE time < '2018-01-10'",
 			"INSERT INTO `tb` (`col`) VALUES ('timestamp=2019-12-16')",
-			"insert into tb (col) values (' 2020-09-15 ')",
+			"INSERT INTO tb (col) VALUES (' 2020-09-15 ')",
 			"replace into tb (col) values (' 2020-09-15 ')",
 			"INSERT INTO tb1 SELECT * FROM tb2 WHERE time < '2020-01-10'",
 		},
@@ -731,7 +731,7 @@ func TestRuleSQLCalcFoundRows(t *testing.T) {
 func TestRuleCommaAnsiJoin(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		`select c1,c2,c3 from t1,t2 join t3 on t1.c1=t2.c1 and t1.c3=t3.c1 where id>1000;`,
+		`SELECT c1,c2,c3 FROM t1,t2 JOIN t3 ON t1.c1=t2.c1 AND t1.c3=t3.c1 WHERE id>1000;`,
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -774,16 +774,16 @@ func TestRuleNoDeterministicGroupby(t *testing.T) {
 		// 正面CASE
 		{
 			"select c1,c2,c3 from t1 where c2='foo' group by c2",
-			"select col, col2, sum(col1) from tb group by col",
+			"SELECT col, col2, SUM(col1) FROM tb GROUP BY col",
 			"select col, col1 from tb group by col,sum(col1)",
 			"select * from tb group by col",
 		},
 
 		// 反面CASE
 		{
-			"select id from film",
-			"select col, sum(col1) from tb group by col",
-			"select * from file",
+			"SELECT id FROM film",
+			"SELECT col, SUM(col1) FROM tb GROUP BY col",
+			"SELECT * FROM file",
 			"SELECT COUNT(*) AS cnt, language_id FROM film GROUP BY language_id;",
 			"SELECT COUNT(*) AS cnt FROM film GROUP BY language_id;",
 		},
@@ -818,7 +818,7 @@ func TestRuleNoDeterministicGroupby(t *testing.T) {
 func TestRuleNoDeterministicLimit(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"select col1,col2 from tbl where name='tony' limit 10",
+		"SELECT col1,col2 FROM tbl WHERE name='tony' LIMIT 10",
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -917,9 +917,9 @@ func TestRuleUpdateSetAnd(t *testing.T) {
 			"update table1 set a = ( select a from table2 where b=1 and c=2) and b=1 where d=2",
 		},
 		{
-			"update tbl set col = 1 ,cl = 2 where col=3;",
+			"UPDATE tbl SET col = 1 ,cl = 2 WHERE col=3;",
 			// https://github.com/laojianzi/soar/issues/226
-			"update table1 set a = ( select a from table2 where b=1 and c=2), b=1, c=2 where d=2",
+			"UPDATE table1 SET a = ( SELECT a FROM table2 WHERE b=1 AND c=2), b=1, c=2 WHERE d=2",
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -953,8 +953,8 @@ func TestRuleImpossibleWhere(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"select * from tbl where 1 != 1;",
-			"select * from tbl where 'a' != 'a';",
+			"SELECT * FROM tbl WHERE 1 != 1;",
+			"SELECT * FROM tbl WHERE 'a' != 'a';",
 			"select * from tbl where col between 10 AND 5;",
 		},
 		{
@@ -994,21 +994,21 @@ func TestRuleMeaninglessWhere(t *testing.T) {
 	sqls := [][]string{
 		{
 			"select * from tbl where 1 = 1;",
-			"select * from tbl where 'a' = 'a';",
+			"SELECT * FROM tbl WHERE 'a' = 'a';",
 			"select * from tbl where 'a' != 1;",
 			"select * from tbl where 'a';",
-			"select * from tbl where 'a' limit 1;",
+			"SELECT * FROM tbl WHERE 'a' LIMIT 1;",
 			"select * from tbl where 1;",
 			"select * from tbl where 1 limit 1;",
-			"select * from tbl where id = 1 or 2;",
+			"SELECT * FROM tbl WHERE id = 1 OR 2;",
 			"select * from tbl where true;",
-			"select * from tbl where 'true';",
+			"SELECT * FROM tbl WHERE 'true';",
 		},
 		{
-			"select * from tbl where false;",
-			"select * from tbl where 'false';",
+			"SELECT * FROM tbl WHERE FALSE;",
+			"SELECT * FROM tbl WHERE 'false';",
 			"select * from tbl where 0;",
-			"select * from tbl where '0';",
+			"SELECT * FROM tbl WHERE '0';",
 			"select * from tbl where 2 = 1;",
 			"select * from tbl where 'b' = 'a';",
 		},
@@ -1077,17 +1077,17 @@ func TestRuleMultiCompare(t *testing.T) {
 	sqls := [][]string{
 		{
 			"SELECT * FROM tbl WHERE col = col = 'abc'",
-			"SELECT * FROM tbl WHERE col = 'def' and col = col = 'abc'",
-			"SELECT * FROM tbl WHERE col = 'def' or col = col = 'abc'",
+			"SELECT * FROM tbl WHERE col = 'def' AND col = col = 'abc'",
+			"SELECT * FROM tbl WHERE col = 'def' OR col = col = 'abc'",
 			"SELECT * FROM tbl WHERE col = col = 'abc' and col = 'def'",
-			"UPDATE tbl set col = 1 WHERE col = col = 'abc'",
+			"UPDATE tbl SET col = 1 WHERE col = col = 'abc'",
 			"DELETE FROM tbl WHERE col = col = 'abc'",
 		},
 		{
 			"SELECT * FROM tbl WHERE col = 'abc'",
 			// https://github.com/laojianzi/soar/issues/169
 			"SELECT * FROM tbl WHERE col = 'abc' and c = 1",
-			"update tb set c = 1 where a = 2 and b = 3",
+			"UPDATE tb SET c = 1 WHERE a = 2 AND b = 3",
 			"delete from tb where a = 2 and b = 3",
 		},
 	}
@@ -1174,7 +1174,7 @@ func TestRuleUpdateOnUpdate(t *testing.T) {
 			`UPDATE category SET name='ActioN' WHERE category_id=1`,
 		},
 		{
-			`select * from film limit 1`,
+			`SELECT * FROM film LIMIT 1`,
 			"UPDATE category SET name='ActioN', last_update=last_update WHERE category_id=1",
 		},
 	}
@@ -1227,7 +1227,7 @@ func TestRuleUpdateOnUpdate(t *testing.T) {
 func TestRuleStandardINEQ(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"select col1,col2 from tbl where type!=0",
+		"SELECT col1,col2 FROM tbl WHERE type!=0",
 		// "select col1,col2 from tbl where type<>0",
 	}
 	for _, sql := range sqls {
@@ -1254,8 +1254,8 @@ func TestRuleUseKeyWord(t *testing.T) {
 			"ALTER TABLE tbl ADD COLUMN `select` varchar(10)",
 		},
 		{
-			"CREATE TABLE tbl (a int)",
-			"ALTER TABLE tbl ADD COLUMN col varchar(10)",
+			"CREATE TABLE tbl (a INT)",
+			"ALTER TABLE tbl ADD COLUMN col VARCHAR(10)",
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -1288,13 +1288,13 @@ func TestRulePluralWord(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"CREATE TABLE tbl (`people` int)",
+			"CREATE TABLE tbl (`people` INT)",
 			"CREATE TABLE people (a int)",
 			"ALTER TABLE tbl ADD COLUMN people varchar(10)",
 		},
 		{
-			"CREATE TABLE tbl (`person` int)",
-			"ALTER TABLE tbl ADD COLUMN person varchar(10)",
+			"CREATE TABLE tbl (`person` INT)",
+			"ALTER TABLE tbl ADD COLUMN person VARCHAR(10)",
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -1327,11 +1327,11 @@ func TestRuleMultiBytesWord(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"select col as 列 from tb",
+			"SELECT col AS 列 FROM tb",
 			"select col as `列` from tb",
 		},
 		{
-			"select col as c from tb",
+			"SELECT col AS c FROM tb",
 			"select '列'",
 		},
 	}
@@ -1562,12 +1562,12 @@ func TestRuleImpreciseDataType(t *testing.T) {
 			`CREATE TABLE tab2 (
           p_id BIGINT UNSIGNED NOT NULL,
           a_id BIGINT UNSIGNED NOT NULL,
-          hours float NOT null,
+          hours FLOAT NOT NULL,
           PRIMARY KEY (p_id, a_id)
          );`,
 			`alter table tbl add column c float not null;`,
-			`insert into tb (col) values (0.00001);`,
-			`select * from tb where col = 0.00001;`,
+			`INSERT INTO tb (col) VALUES (0.00001);`,
+			`SELECT * FROM tb WHERE col = 0.00001;`,
 		},
 		{
 			"REPLACE INTO `storage` (`hostname`,`storagehost`, `filename`, `starttime`, `binlogstarttime`, `uploadname`, `binlogsize`, `filesize`, `md5`, `status`) VALUES (1, 1, 1, 1, 1, 1, ?, ?);",
@@ -1603,8 +1603,8 @@ func TestRuleImpreciseDataType(t *testing.T) {
 func TestRuleValuesInDefinition(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		`create table tab1(status ENUM('new', 'in progress', 'fixed'))`,
-		`alter table tab1 add column status ENUM('new', 'in progress', 'fixed')`,
+		`CREATE TABLE tab1(status ENUM('new', 'in progress', 'fixed'))`,
+		`ALTER TABLE tab1 ADD COLUMN status ENUM('new', 'in progress', 'fixed')`,
 	}
 
 	for _, sql := range sqls {
@@ -1647,7 +1647,7 @@ func TestRuleIndexAttributeOrder(t *testing.T) {
 func TestRuleNullUsage(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		`select c1,c2,c3 from tab where c4 is null or c4 <> 1;`,
+		`SELECT c1,c2,c3 FROM tab WHERE c4 IS NULL OR c4 <> 1;`,
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -1667,7 +1667,7 @@ func TestRuleNullUsage(t *testing.T) {
 func TestRuleStringConcatenation(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		`select c1 || coalesce(' ' || c2 || ' ', ' ') || c3 as c from tab;`,
+		`SELECT c1 || COALESCE(' ' || c2 || ' ', ' ') || c3 AS c FROM tab;`,
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -1709,12 +1709,12 @@ func TestRuleCountConst(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			`select count(1) from tbl;`,
-			`select count(col) from tbl;`,
+			`SELECT COUNT(1) FROM tbl;`,
+			`SELECT COUNT(col) FROM tbl;`,
 		},
 		{
-			`select count(*) from tbl`,
-			`select count(DISTINCT col) from tbl`,
+			`SELECT COUNT(*) FROM tbl`,
+			`SELECT COUNT(DISTINCT col) FROM tbl`,
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -1749,7 +1749,7 @@ func TestRuleSumNPE(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			`select sum(1) from tbl;`,
+			`SELECT SUM(1) FROM tbl;`,
 			`select sum(col) from tbl;`,
 		},
 		{
@@ -1786,7 +1786,7 @@ func TestRuleSumNPE(t *testing.T) {
 func TestRulePatternMatchingUsage(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		`select c1,c2,c3,c4 from tab1 where col_id REGEXP '[[:<:]]12[[:>:]]';`,
+		`SELECT c1,c2,c3,c4 FROM tab1 WHERE col_id REGEXP '[[:<:]]12[[:>:]]';`,
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -1827,7 +1827,7 @@ func TestRuleSpaghettiQueryAlert(t *testing.T) {
 func TestRuleReduceNumberOfJoin(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		`select bp1.p_id, b1.d_d as l, b1.b_id from b1 join bp1 on (b1.b_id = bp1.b_id) left outer join (b1 as b2 join bp2 on (b2.b_id = bp2.b_id)) on (bp1.p_id = bp2.p_id ) join bp21 on (b1.b_id = bp1.b_id) join bp31 on (b1.b_id = bp1.b_id) join bp41 on (b1.b_id = bp1.b_id) where b2.b_id = 0; `,
+		`SELECT bp1.p_id, b1.d_d AS l, b1.b_id FROM b1 JOIN bp1 ON (b1.b_id = bp1.b_id) LEFT OUTER JOIN (b1 AS b2 JOIN bp2 ON (b2.b_id = bp2.b_id)) ON (bp1.p_id = bp2.p_id ) JOIN bp21 ON (b1.b_id = bp1.b_id) JOIN bp31 ON (b1.b_id = bp1.b_id) JOIN bp41 ON (b1.b_id = bp1.b_id) WHERE b2.b_id = 0; `,
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -2236,11 +2236,11 @@ func TestRuleNot(t *testing.T) {
 	sqls := [][]string{
 		{
 			`select id from t where num not in(1,2,3);`,
-			`select id from t where num not like "a%"`,
+			`SELECT id FROM t WHERE num NOT LIKE "a%"`,
 		},
 		{
 			`select id from t where num in(1,2,3);`,
-			`select id from t where num like "a%"`,
+			`SELECT id FROM t WHERE num LIKE "a%"`,
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -2395,7 +2395,7 @@ func TestRuleSubQueryLimit(t *testing.T) {
 		},
 		{
 			`select * from (select id from tbl limit 3) as foo`,
-			`select * from tbl where id in (select t.id from (select * from tbl limit 3)as t)`,
+			`SELECT * FROM tbl WHERE id IN (SELECT t.id FROM (SELECT * FROM tbl LIMIT 3)AS t)`,
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -2428,10 +2428,10 @@ func TestRuleSubQueryFunctions(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			`SELECT * FROM staff WHERE name IN (SELECT max(NAME) FROM customer)`,
+			`SELECT * FROM staff WHERE name IN (SELECT MAX(NAME) FROM customer)`,
 		},
 		{
-			`select * from (select id from tbl limit 3) as foo`,
+			`SELECT * FROM (SELECT id FROM tbl LIMIT 3) AS foo`,
 			`select * from tbl where id in (select t.id from (select * from tbl limit 3)as t)`,
 		},
 	}
@@ -2503,7 +2503,7 @@ func TestRuleUNIONLimit(t *testing.T) {
 func TestRuleReadablePasswords(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		`create table test(id int,name varchar(20) not null,password varchar(200)not null);`,
+		`CREATE TABLE test(id INT,name VARCHAR(20) NOT NULL,password VARCHAR(200)NOT NULL);`,
 		`alter table test add column password varchar(200) not null;`,
 	}
 	for _, sql := range sqls {
@@ -2524,9 +2524,9 @@ func TestRuleReadablePasswords(t *testing.T) {
 func TestRuleDataDrop(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		`delete from tb where a = b;`,
-		`truncate table tb;`,
-		`drop table tb;`,
+		`DELETE FROM tb WHERE a = b;`,
+		`TRUNCATE TABLE tb;`,
+		`DROP TABLE tb;`,
 		`drop database db;`,
 	}
 	for _, sql := range sqls {
@@ -2588,10 +2588,10 @@ func TestCompareWithFunction(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			`select id from t where substring(name,1,3)='abc';`,
+			`SELECT id FROM t WHERE SUBSTRING(name,1,3)='abc';`,
 			`SELECT * FROM tbl WHERE UNIX_TIMESTAMP(loginTime) BETWEEN UNIX_TIMESTAMP('2018-11-16 09:46:00 +0800 CST') AND UNIX_TIMESTAMP('2018-11-22 00:00:00 +0800 CST')`,
-			`select id from t where num/2 = 100`,
-			`select id from t where num/2 < 100`,
+			`SELECT id FROM t WHERE num/2 = 100`,
+			`SELECT id FROM t WHERE num/2 < 100`,
 			// 时间 builtin 函数
 			`SELECT * FROM tb WHERE DATE '2020-01-01'`,
 			`DELETE FROM tb WHERE DATE '2020-01-01'`,
@@ -2600,12 +2600,12 @@ func TestCompareWithFunction(t *testing.T) {
 			`SELECT * FROM tb WHERE TIMESTAMP '1587181360'`,
 			`select * from mysql.user where user  = "root" and date '2020-02-01'`,
 			// 右侧使用函数比较
-			`select id from t where 'abc'=substring(name,1,3);`,
+			`SELECT id FROM t WHERE 'abc'=SUBSTRING(name,1,3);`,
 		},
 		// 正常 SQL
 		{
-			`select id from t where col = (select 1)`,
-			`select id from t where col = 1`,
+			`SELECT id FROM t WHERE col = (SELECT 1)`,
+			`SELECT id FROM t WHERE col = 1`,
 		},
 	}
 	for i, sql := range sqls[0] {
@@ -2658,7 +2658,7 @@ func TestRuleTruncateTable(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
 		`TRUNCATE TABLE tbl_name;`,
-		`truncate TABLE tbl_name;`,
+		`TRUNCATE TABLE tbl_name;`,
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -2678,7 +2678,7 @@ func TestRuleTruncateTable(t *testing.T) {
 func TestRuleIn(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		`select id from t where num in(1,2,3);`,
+		`SELECT id FROM t WHERE num IN(1,2,3);`,
 		`SELECT * FROM tbl WHERE col IN (NULL)`,
 		`SELECT * FROM tbl WHERE col NOT IN (NULL)`,
 	}
@@ -2723,8 +2723,8 @@ func TestRuleVarcharVSChar(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
 		`create table t1(id int,name char(20),last_time date);`,
-		`create table t1(id int,name binary(20),last_time date);`,
-		`alter table t1 add column id int, add column name binary(20), add column last_time date;`,
+		`CREATE TABLE t1(id INT,name BINARY(20),last_time DATE);`,
+		`ALTER TABLE t1 ADD COLUMN id INT, ADD COLUMN name BINARY(20), ADD COLUMN last_time DATE;`,
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -2744,7 +2744,7 @@ func TestRuleVarcharVSChar(t *testing.T) {
 func TestRuleCreateDualTable(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"create table `dual`(id int, primary key (id));",
+		"CREATE TABLE `dual`(id INT, PRIMARY KEY (id));",
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -2765,12 +2765,12 @@ func TestRuleAlterCharset(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			`alter table tbl default character set 'utf8';`,
-			`alter table tbl default character set='utf8';`,
+			`ALTER TABLE tbl DEFAULT CHARACTER SET 'utf8';`,
+			`ALTER TABLE tbl DEFAULT CHARACTER SET='utf8';`,
 			`ALTER TABLE t1 CHANGE a b BIGINT NOT NULL, default character set utf8`,
-			`ALTER TABLE t1 CHANGE a b BIGINT NOT NULL,default character set utf8`,
-			`ALTER TABLE t1 CHANGE a b BIGINT NOT NULL, character set utf8`,
-			`ALTER TABLE t1 CHANGE a b BIGINT NOT NULL,character set utf8`,
+			`ALTER TABLE t1 CHANGE a b BIGINT NOT NULL,DEFAULT CHARACTER SET utf8`,
+			`ALTER TABLE t1 CHANGE a b BIGINT NOT NULL, CHARACTER SET utf8`,
+			`ALTER TABLE t1 CHANGE a b BIGINT NOT NULL,CHARACTER SET utf8`,
 			`alter table t1 default collate = utf8_unicode_ci;`,
 			`ALTER TABLE tbl_name CHARACTER SET 'utf8';`,
 			// `ALTER TABLE tbl_name CHARACTER SET charset_name;`, // FIXME: unknown CHARACTER SET
@@ -2849,8 +2849,8 @@ func TestRuleAlterDropKey(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			`alter table film drop primary key`,
-			`alter table film drop foreign key fk_film_language`,
+			`ALTER TABLE film DROP PRIMARY KEY`,
+			`ALTER TABLE film DROP FOREIGN KEY fk_film_language`,
 		},
 		{
 			// 反面的例子
@@ -2887,13 +2887,13 @@ func TestRuleCantBeNull(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"CREATE TABLE `tb`(`c` longblob NOT NULL);",
+			"CREATE TABLE `tb`(`c` LONGBLOB NOT NULL);",
 		},
 		{
 			"CREATE TABLE `tbl` (`c` longblob);",
-			"alter TABLE `tbl` add column `c` longblob;",
-			"alter TABLE `tbl` add column `c` text;",
-			"alter TABLE `tbl` add column `c` blob;",
+			"ALTER TABLE `tbl` ADD COLUMN `c` LONGBLOB;",
+			"ALTER TABLE `tbl` ADD COLUMN `c` TEXT;",
+			"ALTER TABLE `tbl` ADD COLUMN `c` BLOB;",
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -2926,8 +2926,8 @@ func TestRuleCantBeNull(t *testing.T) {
 func TestRuleTooManyKeyParts(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"CREATE TABLE `tb` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `c` longblob NOT NULL DEFAULT '', PRIMARY KEY (`id`));",
-		"alter TABLE `tb` add index idx_idx (`id`);",
+		"CREATE TABLE `tb` ( `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, `c` LONGBLOB NOT NULL DEFAULT '', PRIMARY KEY (`id`));",
+		"ALTER TABLE `tb` ADD INDEX idx_idx (`id`);",
 	}
 	for _, sql := range sqls {
 		q, err := NewQuery4Audit(sql)
@@ -2971,15 +2971,15 @@ func TestRulePKNotInt(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"create table tbl ( a char(10), b int, primary key (`a`)) engine=InnoDB;",
-			"create table tbl ( a int, b int, primary key (`a`)) engine=InnoDB;",
-			"create table tbl ( a bigint, b int, primary key (`a`)) engine=InnoDB;",
-			"create table tbl ( a int unsigned, b int, primary key (`a`)) engine=InnoDB;",
-			"create table tbl ( a bigint unsigned, b int, primary key (`a`)) engine=InnoDB;",
+			"CREATE TABLE tbl ( a CHAR(10), b INT, PRIMARY KEY (`a`)) ENGINE=InnoDB;",
+			"CREATE TABLE tbl ( a INT, b INT, PRIMARY KEY (`a`)) ENGINE=InnoDB;",
+			"CREATE TABLE tbl ( a BIGINT, b INT, PRIMARY KEY (`a`)) ENGINE=InnoDB;",
+			"CREATE TABLE tbl ( a INT UNSIGNED, b INT, PRIMARY KEY (`a`)) ENGINE=InnoDB;",
+			"CREATE TABLE tbl ( a BIGINT UNSIGNED, b INT, PRIMARY KEY (`a`)) ENGINE=InnoDB;",
 		},
 		{
-			"CREATE TABLE tbl (a int unsigned auto_increment, b int, primary key(`a`)) engine=InnoDB;",
-			"CREATE TABLE `tb` ( `id` Bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'auto id', Primary  key (`id`) ) ENGINE = InnoDB COMMENT 'comment'",
+			"CREATE TABLE tbl (a INT UNSIGNED AUTO_INCREMENT, b INT, PRIMARY KEY(`a`)) ENGINE=InnoDB;",
+			"CREATE TABLE `tb` ( `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'auto id', PRIMARY  KEY (`id`) ) ENGINE = InnoDB COMMENT 'comment'",
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -3017,7 +3017,7 @@ func TestRuleOrderByMultiDirection(t *testing.T) {
 			`SELECT col FROM tbl order by col desc, col2 asc`,
 		},
 		{
-			`SELECT col FROM tbl order by col, col2`,
+			`SELECT col FROM tbl ORDER BY col, col2`,
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -3094,10 +3094,10 @@ func TestRuleFulltextIndex(t *testing.T) {
 		{
 			`ALTER TABLE tb ADD FULLTEXT INDEX ip (ip);`,
 			// `CREATE FULLTEXT INDEX ft_ip ON tb (ip);`, // TODO: tidb not support yet
-			`CREATE TABLE tb ( id int(10) unsigned NOT NULL AUTO_INCREMENT, ip varchar(255) NOT NULL DEFAULT '', PRIMARY KEY (id), FULLTEXT KEY ip (ip) ) ENGINE=InnoDB;`,
+			`CREATE TABLE tb ( id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, ip VARCHAR(255) NOT NULL DEFAULT '', PRIMARY KEY (id), FULLTEXT KEY ip (ip) ) ENGINE=InnoDB;`,
 		},
 		{
-			`ALTER TABLE tbl add INDEX idx_col (col);`,
+			`ALTER TABLE tbl ADD INDEX idx_col (col);`,
 			`CREATE INDEX part_of_name ON customer (name(10));`,
 		},
 	}
@@ -3133,12 +3133,12 @@ func TestRuleTimestampDefault(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"CREATE TABLE tbl( `id` bigint not null, `create_time` timestamp) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
-			"ALTER TABLE t1 MODIFY b timestamp NOT NULL;",
+			"CREATE TABLE tbl( `id` BIGINT NOT NULL, `create_time` TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+			"ALTER TABLE t1 MODIFY b TIMESTAMP NOT NULL;",
 			`ALTER TABLE t1 ADD c_time timestamp NOT NULL default "0000-00-00"`,
-			`ALTER TABLE t1 ADD c_time timestamp NOT NULL default '0'`,
-			`ALTER TABLE t1 ADD c_time timestamp NOT NULL default 0`,
-			`ALTER TABLE t1 ADD c_time datetime NOT NULL default 0`,
+			`ALTER TABLE t1 ADD c_time TIMESTAMP NOT NULL DEFAULT '0'`,
+			`ALTER TABLE t1 ADD c_time TIMESTAMP NOT NULL DEFAULT 0`,
+			`ALTER TABLE t1 ADD c_time DATETIME NOT NULL DEFAULT 0`,
 		},
 		{
 			"CREATE TABLE tbl (`id` bigint not null, `update_time` timestamp default current_timestamp)",
@@ -3183,8 +3183,8 @@ func TestRuleAutoIncrementInitNotZero(t *testing.T) {
 		// 反面的例子
 		{
 			"CREATE TABLE `test1` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `pad` char(60) NOT NULL DEFAULT '', PRIMARY KEY (`id`))",
-			"CREATE TABLE `test1` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `pad` char(60) NOT NULL DEFAULT '', PRIMARY KEY (`id`)) auto_increment = 1",
-			"CREATE TABLE `test1` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `pad` char(60) NOT NULL DEFAULT '', PRIMARY KEY (`id`)) auto_increment = 1 DEFAULT CHARSET=latin1",
+			"CREATE TABLE `test1` ( `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, `pad` CHAR(60) NOT NULL DEFAULT '', PRIMARY KEY (`id`)) AUTO_INCREMENT = 1",
+			"CREATE TABLE `test1` ( `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, `pad` CHAR(60) NOT NULL DEFAULT '', PRIMARY KEY (`id`)) AUTO_INCREMENT = 1 DEFAULT CHARSET=latin1",
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -3219,13 +3219,13 @@ func TestRuleColumnWithCharset(t *testing.T) {
 		// 正面的例子
 		{
 			"CREATE TABLE `tb2` ( `id` int(11) DEFAULT NULL, `col` char(10) CHARACTER SET utf8 DEFAULT NULL)",
-			"alter table tb2 change col col char(10) CHARACTER SET utf8 DEFAULT NULL;",
-			"CREATE TABLE tb (a nvarchar(10))",
+			"ALTER TABLE tb2 CHANGE col col CHAR(10) CHARACTER SET utf8 DEFAULT NULL;",
+			"CREATE TABLE tb (a NVARCHAR(10))",
 			"CREATE TABLE tb (a nchar(10))",
 		},
 		// 反面的例子
 		{
-			"CREATE TABLE `tb` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `c` char(120) NOT NULL DEFAULT '', PRIMARY KEY (`id`))",
+			"CREATE TABLE `tb` ( `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, `c` CHAR(120) NOT NULL DEFAULT '', PRIMARY KEY (`id`))",
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -3263,8 +3263,8 @@ func TestRuleTableCharsetCheck(t *testing.T) {
 			"ALTER TABLE tbl CONVERT TO CHARACTER SET latin1;",
 		},
 		{
-			"create table tlb (a int);",
-			"ALTER TABLE `tbl` add column a int, add column b int ;",
+			"CREATE TABLE tlb (a INT);",
+			"ALTER TABLE `tbl` ADD COLUMN a INT, ADD COLUMN b INT ;",
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -3299,11 +3299,11 @@ func TestRuleTableCollateCheck(t *testing.T) {
 	sqls := [][]string{
 		{
 			"CREATE DATABASE sbtest /*!40100 DEFAULT COLLATE latin1_bin */;",
-			"create table tbl (a int) DEFAULT COLLATE=latin1_bin;",
+			"CREATE TABLE tbl (a INT) DEFAULT COLLATE=latin1_bin;",
 		},
 		{
-			"create table tlb (a int);",
-			"ALTER TABLE `tbl` add column a int, add column b int ;",
+			"CREATE TABLE tlb (a INT);",
+			"ALTER TABLE `tbl` ADD COLUMN a INT, ADD COLUMN b INT ;",
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -3342,19 +3342,19 @@ func TestRuleBlobDefaultValue(t *testing.T) {
 			"alter table `tb` add column `c` json NOT NULL DEFAULT '';",
 		},
 		{
-			"CREATE TABLE `tb` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `c` blob NOT NULL, PRIMARY KEY (`id`));",
+			"CREATE TABLE `tb` ( `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, `c` BLOB NOT NULL, PRIMARY KEY (`id`));",
 			"CREATE TABLE `tb` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `c` json NOT NULL, PRIMARY KEY (`id`));",
-			"CREATE TABLE `tb` (`col` text NOT NULL);",
+			"CREATE TABLE `tb` (`col` TEXT NOT NULL);",
 			"alter table `tb` add column `c` blob NOT NULL;",
-			"alter table `tb` add column `c` json NOT NULL;",
+			"ALTER TABLE `tb` ADD COLUMN `c` JSON NOT NULL;",
 			"ALTER TABLE tb ADD COLUMN a BLOB DEFAULT NULL",
 			"ALTER TABLE tb ADD COLUMN a JSON DEFAULT NULL",
 			"CREATE TABLE tb ( a BLOB DEFAULT NULL)",
 			"CREATE TABLE tb ( a JSON DEFAULT NULL)",
 			"alter TABLE `tbl` add column `c` longblob;",
-			"alter TABLE `tbl` add column `c` text;",
-			"alter TABLE `tbl` add column `c` blob;",
-			"alter TABLE `tbl` add column `c` json;",
+			"ALTER TABLE `tbl` ADD COLUMN `c` TEXT;",
+			"ALTER TABLE `tbl` ADD COLUMN `c` BLOB;",
+			"ALTER TABLE `tbl` ADD COLUMN `c` JSON;",
 		},
 	}
 
@@ -3389,17 +3389,17 @@ func TestRuleIntPrecision(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"CREATE TABLE `tb` ( `id` int(1) );",
-			"CREATE TABLE `tb` ( `id` bigint(1) );",
-			"alter TABLE `tb` add column `id` bigint(1);",
+			"CREATE TABLE `tb` ( `id` INT(1) );",
+			"CREATE TABLE `tb` ( `id` BIGINT(1) );",
+			"ALTER TABLE `tb` ADD COLUMN `id` BIGINT(1);",
 			"alter TABLE `tb` add column `id` int(1);",
 		},
 		{
-			"CREATE TABLE `tb` ( `id` int(10));",
+			"CREATE TABLE `tb` ( `id` INT(10));",
 			"CREATE TABLE `tb` ( `id` bigint(20));",
 			"alter TABLE `tb` add column `id` bigint(20);",
-			"alter TABLE `tb` add column `id` int(10);",
-			"CREATE TABLE `tb` ( `id` int);",
+			"ALTER TABLE `tb` ADD COLUMN `id` INT(10);",
+			"CREATE TABLE `tb` ( `id` INT);",
 			"alter TABLE `tb` add column `id` bigint;",
 		},
 	}
@@ -3435,14 +3435,14 @@ func TestRuleVarcharLength(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"CREATE TABLE `tb` ( `id` varchar(4000) );",
+			"CREATE TABLE `tb` ( `id` VARCHAR(4000) );",
 			"CREATE TABLE `tb` ( `id` varchar(3500) );",
 			"alter TABLE `tb` add column `id` varchar(3500);",
 		},
 		{
-			"CREATE TABLE `tb` ( `id` varchar(1024));",
-			"CREATE TABLE `tb` ( `id` varchar(20));",
-			"alter TABLE `tb` add column `id` varchar(35);",
+			"CREATE TABLE `tb` ( `id` VARCHAR(1024));",
+			"CREATE TABLE `tb` ( `id` VARCHAR(20));",
+			"ALTER TABLE `tb` ADD COLUMN `id` VARCHAR(35);",
 		},
 	}
 
@@ -3483,8 +3483,8 @@ func TestRuleColumnNotAllowType(t *testing.T) {
 			"ALTER TABLE `tb` add column `a` BOOLEAN;",
 		},
 		{
-			"CREATE TABLE `tb` ( `id` varchar(1024));",
-			"ALTER TABLE `tb` add column `id` varchar(35);",
+			"CREATE TABLE `tb` ( `id` VARCHAR(1024));",
+			"ALTER TABLE `tb` ADD COLUMN `id` VARCHAR(35);",
 		},
 	}
 
@@ -3566,7 +3566,7 @@ func TestRuleNoOSCKey(t *testing.T) {
 		// 反面的例子
 		{
 			"CREATE TABLE tbl (a int, primary key(`a`))",
-			"CREATE TABLE tbl (a int, unique key(`a`))",
+			"CREATE TABLE tbl (a INT, UNIQUE KEY(`a`))",
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -3598,7 +3598,7 @@ func TestRuleNoOSCKey(t *testing.T) {
 func TestRuleTooManyFields(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"create table tbl (a int);",
+		"CREATE TABLE tbl (a INT);",
 	}
 
 	common.Config.MaxColCount = 0
@@ -3620,7 +3620,7 @@ func TestRuleTooManyFields(t *testing.T) {
 func TestRuleMaxTextColsCount(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := []string{
-		"create table tbl (a int, b text, c blob, d text);",
+		"CREATE TABLE tbl (a INT, b TEXT, c BLOB, d TEXT);",
 	}
 
 	common.Config.MaxColCount = 0
@@ -3647,7 +3647,7 @@ func TestRuleMaxTextColsCountWithEnv(t *testing.T) {
 	vEnv, rEnv := env.BuildEnv()
 	defer vEnv.CleanUp()
 	initSQLs := []string{
-		`CREATE TABLE t1 (id int, title text);`,
+		`CREATE TABLE t1 (id INT, title TEXT);`,
 		`CREATE TABLE t2 (id int, title text);`,
 	}
 
@@ -3660,7 +3660,7 @@ func TestRuleMaxTextColsCountWithEnv(t *testing.T) {
 			"alter table t1 add column other text;",
 		},
 		{
-			"alter table t2 add column col varchar(10);",
+			"ALTER TABLE t2 ADD COLUMN col VARCHAR(10);",
 		},
 	}
 
@@ -3716,11 +3716,11 @@ func TestRuleAllowEngine(t *testing.T) {
 	sqls := [][]string{
 		{
 			"CREATE TABLE tbl (a int) engine=MyISAM;",
-			"ALTER TABLE tbl engine=MyISAM;",
+			"ALTER TABLE tbl ENGINE=MyISAM;",
 			"CREATE TABLE tbl (a int);",
 		},
 		{
-			"CREATE TABLE tbl (a int) engine = InnoDB;",
+			"CREATE TABLE tbl (a INT) ENGINE = InnoDB;",
 		},
 	}
 	for _, sql := range sqls[0] {
@@ -3801,8 +3801,8 @@ func TestRuleIdxPrefix(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"CREATE TABLE tbl (a int, unique key `xx_a` (`a`));",
-			"CREATE TABLE tbl (a int, key `xx_a` (`a`));",
+			"CREATE TABLE tbl (a INT, UNIQUE KEY `xx_a` (`a`));",
+			"CREATE TABLE tbl (a INT, KEY `xx_a` (`a`));",
 			`ALTER TABLE tbl ADD INDEX xx_a (a)`,
 			`ALTER TABLE tbl ADD UNIQUE INDEX xx_a (a)`,
 		},
@@ -3841,15 +3841,15 @@ func TestRuleStandardName(t *testing.T) {
 	common.Log.Debug("Entering function: %s", common.GetFunctionName())
 	sqls := [][]string{
 		{
-			"CREATE TABLE `tbl-name` (a int);",
-			"CREATE TABLE `tbl `(a int)",
+			"CREATE TABLE `tbl-name` (a INT);",
+			"CREATE TABLE `tbl `(a INT)",
 			"CREATE TABLE t__bl (a int);",
 			"SELECT `dataType` FROM tb;",
 		},
 		{
-			"CREATE TABLE tbl (a int)",
-			"CREATE TABLE `tbl`(a int)",
-			"CREATE TABLE `tbl` (a int) ENGINE=InnoDB DEFAULT CHARSET=utf8",
+			"CREATE TABLE tbl (a INT)",
+			"CREATE TABLE `tbl`(a INT)",
+			"CREATE TABLE `tbl` (a INT) ENGINE=InnoDB DEFAULT CHARSET=utf8",
 		},
 	}
 	for _, sql := range sqls[0] {

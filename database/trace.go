@@ -83,6 +83,8 @@ func (db *Connector) Trace(sql string, params ...interface{}) ([]TraceRow, error
 			common.Log.Debug(trxErr.Error())
 		}
 	}()
+
+	//nolint: rowserrcheck // unused rows
 	_, err = trx.Query("SET SESSION OPTIMIZER_TRACE='enabled=on'")
 	common.LogIfError(err, "")
 
@@ -91,10 +93,13 @@ func (db *Connector) Trace(sql string, params ...interface{}) ([]TraceRow, error
 	if err != nil {
 		return rows, err
 	}
+
 	for tmpRes.Next() {
 		continue
 	}
 
+	common.LogIfError(tmpRes.Err(), "")
+	tmpRes.Close()
 	// 返回Trace结果
 	res, err := trx.Query("SELECT * FROM information_schema.OPTIMIZER_TRACE")
 	if err != nil {
@@ -113,10 +118,14 @@ func (db *Connector) Trace(sql string, params ...interface{}) ([]TraceRow, error
 		}
 		rows = append(rows, traceRow)
 	}
+
+	common.LogIfError(res.Err(), "")
 	res.Close()
 
 	// 关闭Trace
 	common.Log.Debug("SET SESSION OPTIMIZER_TRACE='enabled=off'")
+
+	//nolint: rowserrcheck // unused rows
 	_, err = trx.Query("SET SESSION OPTIMIZER_TRACE='enabled=off'")
 	common.LogIfError(err, "")
 	return rows, err

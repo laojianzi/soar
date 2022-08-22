@@ -95,9 +95,12 @@ func (db *Connector) Query(sql string, params ...interface{}) (QueryResult, erro
 		common.Log.Error(err.Error())
 		return res, err
 	}
-	res.Rows, res.Error = db.Conn.Query(sql, params...)
 
+	//nolint: rowserrcheck // unused rows
+	res.Rows, res.Error = db.Conn.Query(sql, params...)
+	common.LogIfError(res.Error, "")
 	if common.Config.ShowWarnings {
+		//nolint: rowserrcheck // unused rows
 		res.Warning, err = db.Conn.Query("SHOW WARNINGS")
 		common.LogIfError(err, "")
 	}
@@ -111,6 +114,8 @@ func (db *Connector) Query(sql string, params ...interface{}) (QueryResult, erro
 				err = cost.Scan(&varName, &res.QueryCost)
 				common.LogIfError(err, "")
 			}
+
+			common.LogIfError(cost.Err(), "")
 			if err := cost.Close(); err != nil {
 				common.Log.Error(err.Error())
 			}
@@ -211,7 +216,7 @@ func (db *Connector) ColumnCardinality(tb, col string) float64 {
 
 	// 计算该列散粒度
 	db.Conn.Stats()
-	res, err := db.Query(fmt.Sprintf("select count(distinct `%s`) from `%s`.`%s`",
+	res, err := db.Query(fmt.Sprintf("SELECT COUNT(DISTINCT `%s`) FROM `%s`.`%s`",
 		Escape(col, false),
 		Escape(db.Database, false),
 		Escape(tb, false)))

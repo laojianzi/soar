@@ -463,7 +463,7 @@ func (idxAdv *IndexAdvisor) idxColsTypeCheck(idxList []IndexInfo) []IndexInfo {
 		}
 
 		// 新的alter语句
-		newDDL := fmt.Sprintf("ALTER TABLE `%s`.`%s` ADD index `%s` (`%s)", idxAdv.vEnv.RealDB(idx.Database),
+		newDDL := fmt.Sprintf("ALTER TABLE `%s`.`%s` ADD INDEX `%s` (`%s)", idxAdv.vEnv.RealDB(idx.Database),
 			idx.Table, idxName, idxCols)
 
 		// 将筛选改造后的索引信息信息加入到新的索引列表中
@@ -622,7 +622,7 @@ func rmSelfDupIndex(indexes []IndexInfo) []IndexInfo {
 }
 
 // buildJoinIndex 检查Join中使用的库表是否需要添加索引并给予索引建议
-func (idxAdv *IndexAdvisor) buildJoinIndex(meta common.Meta) []IndexInfo {
+func (idxAdv *IndexAdvisor) buildJoinIndex(_ common.Meta) []IndexInfo {
 	var indexes []IndexInfo
 	for _, IndexCols := range idxAdv.joinCond {
 		// 如果该列的库表为join condition中需要添加索引的库表
@@ -674,7 +674,7 @@ func (idxAdv *IndexAdvisor) buildIndex(idxList map[string]map[string][]*common.C
 				idxName = strings.TrimRight(idxName[:IndexNameMaxLength], "_")
 			}
 
-			alterSQL := fmt.Sprintf("ALTER TABLE `%s`.`%s` ADD index `%s` (`%s`)", idxAdv.vEnv.RealDB(db), tb,
+			alterSQL := fmt.Sprintf("ALTER TABLE `%s`.`%s` ADD INDEX `%s` (`%s`)", idxAdv.vEnv.RealDB(db), tb,
 				idxName, strings.Join(colNames, "`,`"))
 
 			indexes = append(indexes, IndexInfo{
@@ -702,9 +702,9 @@ func (idxAdv *IndexAdvisor) buildIndexWithNoEnv(indexList map[string]map[string]
 				}
 				idxName := common.Config.IdxPrefix + col.Name
 				// 库、表、列名需要用反撇转义
-				alterSQL := fmt.Sprintf("ALTER TABLE `%s`.`%s` ADD index `%s` (`%s`)", idxAdv.vEnv.RealDB(col.DB), col.Table, idxName, col.Name)
+				alterSQL := fmt.Sprintf("ALTER TABLE `%s`.`%s` ADD INDEX `%s` (`%s`)", idxAdv.vEnv.RealDB(col.DB), col.Table, idxName, col.Name)
 				if col.DB == "" {
-					alterSQL = fmt.Sprintf("ALTER TABLE `%s` ADD index `%s` (`%s`)", col.Table, idxName, col.Name)
+					alterSQL = fmt.Sprintf("ALTER TABLE `%s` ADD INDEX `%s` (`%s`)", col.Table, idxName, col.Name)
 				}
 
 				indexes = append(indexes, IndexInfo{

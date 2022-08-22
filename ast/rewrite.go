@@ -20,15 +20,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/pingcap/parser/ast"
 	"reflect"
 	"regexp"
 	"strings"
 
-	"github.com/laojianzi/soar/common"
-
 	"github.com/kr/pretty"
+	"github.com/pingcap/parser/ast"
 	"vitess.io/vitess/go/vt/sqlparser"
+
+	"github.com/laojianzi/soar/common"
 )
 
 // Rule SQL重写规则

@@ -76,7 +76,8 @@ func (db *Connector) Profiling(sql string, params ...interface{}) ([]ProfilingRo
 	}()
 
 	// 开启 Profiling
-	_, err = trx.Query("set @@profiling=1")
+	//nolint: rowserrcheck // unused rows
+	_, err = trx.Query("SET @@profiling=1")
 	common.LogIfError(err, "")
 
 	// 执行 SQL，抛弃返回结果
@@ -88,8 +89,11 @@ func (db *Connector) Profiling(sql string, params ...interface{}) ([]ProfilingRo
 		continue
 	}
 
+	common.LogIfError(tmpRes.Err(), "")
+	tmpRes.Close()
+
 	// 返回 Profiling 结果
-	res, err := trx.Query("show profile")
+	res, err := trx.Query("SHOW PROFILE")
 	if err != nil {
 		trxErr := trx.Rollback()
 		if trxErr != nil {
@@ -97,6 +101,7 @@ func (db *Connector) Profiling(sql string, params ...interface{}) ([]ProfilingRo
 		}
 		return rows, err
 	}
+
 	var profileRow ProfilingRow
 	for res.Next() {
 		err = res.Scan(&profileRow.Status, &profileRow.Duration)
@@ -106,10 +111,13 @@ func (db *Connector) Profiling(sql string, params ...interface{}) ([]ProfilingRo
 		}
 		rows = append(rows, profileRow)
 	}
+
+	common.LogIfError(res.Err(), "")
 	res.Close()
 
 	// 关闭 Profiling
-	_, err = trx.Query("set @@profiling=0")
+	//nolint: rowserrcheck // unused rows
+	_, err = trx.Query("SET @@profiling=0")
 	common.LogIfError(err, "")
 	return rows, err
 }
