@@ -88,6 +88,8 @@ func checkConfig() int {
 			tmp.Pass = "***" // fix codeql: Clear-text logging of sensitive information
 			fmt.Println("test-dsn", tmp, "Version:", testVersion)
 		} else {
+			tmp := *common.Config.TestDSN
+			tmp.Password = "***" // fix codeql: Clear-text logging of sensitive information
 			fmt.Println("test-dsn", common.Config.TestDSN)
 		}
 	}
