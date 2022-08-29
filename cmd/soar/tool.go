@@ -78,6 +78,7 @@ func checkConfig() int {
 	}
 	testVersion, err := connTest.Version()
 	if err != nil && !common.Config.TestDSN.Disable {
+		connTest.Pass = "***" // fix codeql: Clear-text logging of sensitive information
 		fmt.Println("test-dsn:", connTest, err.Error())
 		return 1
 	}
