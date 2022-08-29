@@ -84,7 +84,9 @@ func checkConfig() int {
 	}
 	if common.Config.Verbose {
 		if err == nil {
-			fmt.Println("test-dsn", connTest, "Version:", testVersion)
+			tmp := *connTest
+			tmp.Pass = "***" // fix codeql: Clear-text logging of sensitive information
+			fmt.Println("test-dsn", tmp, "Version:", testVersion)
 		} else {
 			fmt.Println("test-dsn", common.Config.TestDSN)
 		}
