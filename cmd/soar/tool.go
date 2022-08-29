@@ -106,6 +106,8 @@ func checkConfig() int {
 	}
 	onlineVersion, err := connOnline.Version()
 	if err != nil && !common.Config.OnlineDSN.Disable {
+		tmp := *connOnline
+		tmp.Pass = "***" // fix codeql: Clear-text logging of sensitive information
 		fmt.Println("online-dsn:", connOnline, err.Error())
 		return 1
 	}
