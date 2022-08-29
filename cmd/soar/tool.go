@@ -115,7 +115,9 @@ func checkConfig() int {
 		if err == nil {
 			fmt.Println("online-dsn", tmp, "Version:", onlineVersion)
 		} else {
-			fmt.Println("online-dsn", common.Config.OnlineDSN)
+			tmp := *common.Config.OnlineDSN
+			tmp.Password = "***" // fix codeql: Clear-text logging of sensitive information
+			fmt.Println("online-dsn", tmp)
 		}
 	}
 
