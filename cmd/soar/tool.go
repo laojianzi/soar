@@ -105,15 +105,15 @@ func checkConfig() int {
 		return 1
 	}
 	onlineVersion, err := connOnline.Version()
+	tmp := *connOnline
+	tmp.Pass = "***" // fix codeql: Clear-text logging of sensitive information
 	if err != nil && !common.Config.OnlineDSN.Disable {
-		tmp := *connOnline
-		tmp.Pass = "***" // fix codeql: Clear-text logging of sensitive information
-		fmt.Println("online-dsn:", connOnline, err.Error())
+		fmt.Println("online-dsn:", tmp, err.Error())
 		return 1
 	}
 	if common.Config.Verbose {
 		if err == nil {
-			fmt.Println("online-dsn", connOnline, "Version:", onlineVersion)
+			fmt.Println("online-dsn", tmp, "Version:", onlineVersion)
 		} else {
 			fmt.Println("online-dsn", common.Config.OnlineDSN)
 		}
