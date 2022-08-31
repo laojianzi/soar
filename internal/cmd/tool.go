@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package main
+package cmd
 
 import (
 	"fmt"
@@ -160,22 +160,22 @@ func helpTools() (isContinue bool, exitCode int) {
 }
 
 // reportTool tools in report type
-func reportTool(sql string, bom []byte) (isContinue bool, exitCode int) {
+func reportTool(sql string, bom []byte) (isContinue bool) {
 	switch common.Config.ReportType {
 	case "html":
 		// HTML 格式输入 CSS 加载
 		fmt.Println(common.MarkdownHTMLHeader())
-		return true, 0
+		return true
 	case "md2html":
 		// markdown2html 转换小工具
 		fmt.Println(common.MarkdownHTMLHeader())
 		fmt.Println(common.Markdown2HTML(sql))
-		return false, 0
+		return false
 	case "explain-digest":
 		// 当用户输入为 EXPLAIN 信息，只对 Explain 信息进行分析
 		// 注意： 这里只能处理一条 SQL 的 EXPLAIN 信息，用户一次反馈多条 SQL 的 EXPLAIN 信息无法处理
 		advisor.DigestExplainText(sql)
-		return false, 0
+		return false
 	case "chardet":
 		// Get charset of input
 		charset := common.CheckCharsetByBOM(bom)
@@ -183,12 +183,12 @@ func reportTool(sql string, bom []byte) (isContinue bool, exitCode int) {
 			charset = common.Chardet([]byte(sql))
 		}
 		fmt.Println(charset)
-		return false, 0
+		return false
 	case "remove-comment":
 		fmt.Println(database.RemoveSQLComments(sql))
-		return false, 0
+		return false
 	default:
-		return true, 0
+		return true
 	}
 }
 

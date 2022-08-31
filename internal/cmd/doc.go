@@ -15,4 +15,4 @@
  */
 
 // Package soar is the main program of SOAR
-package main
+package cmd
