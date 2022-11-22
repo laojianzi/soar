@@ -14,7 +14,7 @@ require (
 	github.com/pingcap/tidb v1.1.0-beta.0.20210601085537-5d7c852770eb
 	github.com/russross/blackfriday v1.6.0
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca
-	github.com/tidwall/gjson v1.14.3
+	github.com/tidwall/gjson v1.14.4
 	gopkg.in/yaml.v2 v2.4.0
 	vitess.io/vitess v0.0.0-20200325000816-eda961851d63
 )
