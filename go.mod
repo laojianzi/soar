@@ -11,7 +11,6 @@ require (
 	github.com/kr/pretty v0.3.1
 	github.com/percona/go-mysql v0.0.0-20210427141028-73d29c6da78c
 	github.com/pingcap/parser v0.0.0-20210525032559-c37778aff307
-	github.com/pingcap/tidb v1.1.0-beta.0.20210601085537-5d7c852770eb
 	github.com/russross/blackfriday v1.6.0
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca
 	github.com/tidwall/gjson v1.14.3
@@ -20,8 +19,21 @@ require (
 )
 
 require (
-	github.com/form3tech-oss/jwt-go v3.2.5+incompatible // indirect
+	github.com/google/go-cmp v0.5.2 // indirect
+	github.com/pingcap/check v0.0.0-20200212061837-5e12011dc712 // indirect
+	github.com/pingcap/errors v0.11.5-0.20201126102027-b0a155152ca3 // indirect
+	github.com/pingcap/log v0.0.0-20210317133921-96f4fcab92a4 // indirect
+	go.uber.org/multierr v1.7.0 // indirect
+	go.uber.org/zap v1.16.0 // indirect
+	golang.org/x/lint v0.0.0-20200130185559-910be7a94367 // indirect
+	golang.org/x/mod v0.4.2 // indirect
+	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4 // indirect
 	golang.org/x/sys v0.0.0-20220818161305-2296e01440c6 // indirect
+	golang.org/x/text v0.3.6 // indirect
+	google.golang.org/genproto v0.0.0-20200224152610-e50cd9704f63 // indirect
+	google.golang.org/grpc v1.27.1 // indirect
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
+	honnef.co/go/tools v0.2.0 // indirect
 )
 
 replace (
