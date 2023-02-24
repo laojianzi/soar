@@ -10,7 +10,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/kr/pretty v0.3.1
 	github.com/percona/go-mysql v0.0.0-20210427141028-73d29c6da78c
-	github.com/pingcap/parser v0.0.0-20210525032559-c37778aff307
+	github.com/pingcap/parser v4.0.0-alpha+incompatible
 	github.com/pingcap/tidb v1.1.0-beta.0.20210601085537-5d7c852770eb
 	github.com/russross/blackfriday v1.6.0
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca
