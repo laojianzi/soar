@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/CorgiMan/json2 v0.0.0-20150213135156-e72957aba209
 	github.com/astaxie/beego v1.12.3
-	github.com/dchest/uniuri v0.0.0-20200228104902-7aecb25e1fe5
+	github.com/dchest/uniuri v1.2.0
 	github.com/gedex/inflector v0.0.0-20170307190818-16278e9db813
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/kr/pretty v0.3.1
